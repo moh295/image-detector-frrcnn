@@ -11,15 +11,17 @@ try:
     from defusedxml.ElementTree import parse as ET_parse
 except ImportError:
     from xml.etree.ElementTree import parse as ET_parse
-import warnings
+
 from typing import Any, Callable, Dict, Optional, Tuple, List
 
 from PIL import Image
 
 from torch.utils.data import DataLoader
-# from torchvision import  transforms
+
+import torchvision.transforms as transforms
 import transforms as T
 import utils
+
 
 
 
@@ -165,7 +167,7 @@ class VOCDetection(_VOCBase):
         return voc_dict
 
 def demo_data_image():
-    transofmer = T.Compose([T.ToTensor()])
+    transofmer = transforms.Compose([transforms.ToTensor()])
     data = datasets.ImageFolder(root='./data', transform=transofmer)
     image_loader = torch.utils.data.DataLoader(data, batch_size=1, num_workers=4)
     return image_loader
@@ -173,7 +175,7 @@ def demo_data_image():
     print('validation set length', len(val_dataset))
     return  val_loader
 def image_folder_loader(image_dir,batch_size):
-    transofmer=T.Compose([T.ToTensor()])
+    transofmer=transforms.Compose([transforms.ToTensor()])
     data = datasets.ImageFolder(root=image_dir, transform=transofmer)
     image_loader = torch.utils.data.DataLoader(data,batch_size=batch_size,num_workers=4)
     return image_loader
