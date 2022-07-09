@@ -1,5 +1,5 @@
 import torch
-from dataloader import dataloader
+from dataloader import image_folder_loader
 from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
@@ -8,7 +8,7 @@ import random
 from bbox import BBox
 from utils_local import tensor_to_PIL
 import argparse
-checkpoint= '/App/data/torch_trained_fasterrcnn.pth'
+
 
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
 labels_dict = ['hand','targetobject']
@@ -25,7 +25,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder,labels_dict):
     start = timer()
     for images in dataloder:
         # start_pred = timer()
-        images = list(image.to(device) for image in images[0])
+        images = list(image.to(device) for image in images)
         # print('prediction started')
         predictions = model(images)
         # end = timer()
@@ -71,15 +71,18 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder,labels_dict):
 
 
 if __name__ == '__main__':
-
+    checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--images", help="path to input images",default=video_path)
-    a.add_argument("--pathOut", help="path to images",default=image_folder)
+    a.add_argument("--images", help="path to input images",default='data/images/')
+    a.add_argument("--output", help="path to output folder",default='data/output/')
+    a.add_argument("--batch",help="batch size", default=30)
+    a.add_argument("--checkpoint",help="train model weight", default=checkpoint)
+
     args = a.parse_args()
 
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
-    model.load_state_dict(torch.load(checkpoint))
+    model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer
     params = [p for p in model.parameters() if p.requires_grad]
@@ -87,7 +90,7 @@ if __name__ == '__main__':
                                 momentum=0.9, weight_decay=0.0005)
 
     #loading/checking data....
-    batch_size=30
+    batch_size=args.batch
     print('batch size',batch_size)
-    train_loader, trainval_loader, val_loader= dataloader(batch_size)
-    inference_and_save_mobilnet_full_data(model, '/App/data/output/', val_loader, labels_dict)
+    images= image_folder_loader(args.images,batch_size)
+    inference_and_save_mobilnet_full_data(model, args.output, images, labels_dict)
