@@ -1,8 +1,7 @@
 FROM nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.9-py3
 WORKDIR /App
 COPY . /App
-run git clone https://github.com/NVIDIA-AI-IOT/torch2trt
-workdir torch2trt
-run python3 setup.py install
+RUN pip3 install cython
+RUN pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
-ENTRYPOINT ["python3","app.py"]
+ENTRYPOINT ["/bin/bash"]
