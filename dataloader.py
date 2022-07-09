@@ -168,7 +168,7 @@ class VOCDetection(_VOCBase):
 
 def demo_data_image():
     transofmer = transforms.Compose([transforms.ToTensor()])
-    data = datasets.ImageFolder(root='./data', transform=transofmer)
+    data = datasets.ImageFolder(root='./demo_images', transform=transofmer)
     image_loader = torch.utils.data.DataLoader(data, batch_size=1, num_workers=4)
     return image_loader
 
