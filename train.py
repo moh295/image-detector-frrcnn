@@ -6,8 +6,8 @@ from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 from engine import train_one_epoch, evaluate
+import argparse
 
-checkpoint= '/App/data/torch_trained_fasterrcnn.pth'
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_freq):
@@ -39,19 +39,31 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
 
 if __name__ == '__main__':
+    new_checkpoint = '/App/data/new_torch_trained_fasterrcnn.pth'
+    a = argparse.ArgumentParser()
+    a.add_argument("--checkpoint", help="the weight dirctory for the trained model",
+                   default=False)
+    a.add_argument("--dataset", help="path to dataset with PSCAL VOC 2007 format", default = './data/VOCdevkit2007_handobj_100K/VOC2007')
+    a.add_argument("--output", help="new checkpoint file", default=new_checkpoint)
+
+    a.add_argument("--batch", help="batch size", default=30)
+    args = a.parse_args()
+
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=True).to(device)
     # model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(pretrained=True).to(device)
+    if args.checkpoint:
+        model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     #loading/checking data....
     batch_size=5
     print('batch size',batch_size)
-    train_loader, trainval_loader, val_loader= dataloader()
+    train_loader, trainval_loader, val_loader= dataloader(batch_size,args.dataset)
     #trainging ....
     epochs=20
     print_freq=100
     stat_dic=obj_detcetion_training(model,epochs,train_loader,val_loader,print_freq)
-    print('saving checkpoint to ', checkpoint)
-    torch.save(stat_dic, checkpoint)
+    print('saving checkpoint to ', args.output)
+    torch.save(stat_dic, args.output)

@@ -179,10 +179,10 @@ def image_folder_loader(image_dir,batch_size):
     return image_loader
 
 
-def dataloader(batch_size=1):
+def dataloader(batch_size,data_path):
 
-    #data_path='./data/VOCdevkit/VOC2007'
-    data_path = './data/VOCdevkit2007_handobj_100K/VOC2007'
+
+
 
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
     #train with some of the dataset

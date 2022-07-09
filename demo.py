@@ -74,7 +74,6 @@ if __name__ == '__main__':
 
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", help="the weight dirctory for the trained model",default='/App/data/torch_trained_fasterrcnn.pth')
-
     args = a.parse_args()
 
     #loading model
