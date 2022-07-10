@@ -51,11 +51,11 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         draw = np.copy(image)
 
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
-            bbox = BBox(left=bbox[0], top=bbox[1], right=bbox[2], bottom=bbox[3])
+            # bbox = BBox(left=bbox[0], top=bbox[1], right=bbox[2], bottom=bbox[3])
             print(bbox)
             category = labels_dict[cls-1]
             color=colors['rand']
-            cv2.rectangle(draw,(bbox.left, bbox.top,bbox.left,bbox.bottom), color, 2)
+            cv2.rectangle(draw,bbox, color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', (bbox.left, bbox.top), font,1, color,2, cv2.LINE_AA)
 
 
