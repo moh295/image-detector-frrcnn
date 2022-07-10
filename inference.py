@@ -52,13 +52,13 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
 
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
             bbox = BBox(left=bbox[0], top=bbox[1], right=bbox[2], bottom=bbox[3])
-            category = labels_dict[cls]
+            category = labels_dict[cls-1]
             color=colors['rand']
             cv2.rectangle(draw, (bbox.left, bbox.top), (bbox.right, bbox.bottom), color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', (bbox.left, bbox.top), font,1, color,2, cv2.LINE_AA)
 
 
-        cv2.imwrite( path_to_output_image + str(cnt) + '_demo_output.png',draw)
+        cv2.imwrite(path_to_output_image + str(cnt) + '_demo_output.png',draw)
         print(f'Output image is saved to {path_to_output_image}{cnt}.png')
         cnt += 1
         # image.show()
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     image_list = []
     tensor_list=[]
     image_batch=[]
-    print('path', imdir)
+    print('loadin images form path[', imdir,'].....')
     ext = ['png', 'jpg', 'gif']  # Add image formats here
     files = []
     [files.extend(glob.glob(imdir + '*.' + e)) for e in ext]
