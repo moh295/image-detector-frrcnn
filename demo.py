@@ -92,8 +92,8 @@ if __name__ == '__main__':
     #image= demo_data_image()
     image=image = Image.open('demo_input.png')
     # to_tensor=transforms.ToTensor()
-    transform = transforms.Compose([
-        transforms.PILToTensor()
-    ])
+    transform = transforms.Compose(
+        [transforms.ToTensor(),
+         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     image=transform(image)
     inference_and_save_mobilnet_full_data(model, '/App/data/', (image,), labels_dict)
