@@ -3,4 +3,4 @@ WORKDIR /App
 COPY . /App
 
 #ENTRYPOINT ["/bin/bash"]
-ENTRYPOINT ["python3","video_to_images.py"]
+ENTRYPOINT ["python3","inference.py"]
