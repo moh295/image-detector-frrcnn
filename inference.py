@@ -105,8 +105,8 @@ if __name__ == '__main__':
     ext = ['png', 'jpg', 'gif']  # Add image formats here
     files = []
     [files.extend(glob.glob(imdir + '*.' + e,recursive=True)) for e in ext]
-    print('files',files)
-    print('sorted',list(sorted(files, key=number)))
+    print('files',list(sorted(files)))
+
     image_list = [cv2.imread(file) for file in files]
 
     count=1
