@@ -92,12 +92,15 @@ if __name__ == '__main__':
     #image= demo_data_image()
     image = Image.open('demo_input.png')
     # to_tensor=transforms.ToTensor()
-    image = Image.open(image).convert('RGB')
-    transform=transforms.Compose(
-        [
-         transforms.ToTensor(),
-         transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                              std=[0.229, 0.224, 0.225]),
-         ])
-    image=transform(image)
-    inference_and_save_mobilnet_full_data(model, '/App/data/', (image,), labels_dict)
+
+    # DEFINE TRANSFORMS
+    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225])
+    preprocessing = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        normalize])
+    transformed_sample = preprocessing(image)
+
+    inference_and_save_mobilnet_full_data(model, '/App/data/', (transformed_sample,), labels_dict)
