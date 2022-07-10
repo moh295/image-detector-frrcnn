@@ -53,10 +53,9 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
             # bbox = BBox(left=bbox[0], top=bbox[1], right=bbox[2], bottom=bbox[3])
             bbox=np.array(bbox).astype(int)
-            print(bbox)
             category = labels_dict[cls-1]
-            color=colors['rand']
-            cv2.rectangle(draw,bbox, color, 2)
+            color= colors['red'] if cls==1 else colors['blue']
+            cv2.rectangle(draw,bbox[:2],bbox[2:4], color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font,1, color,2, cv2.LINE_AA)
 
 
