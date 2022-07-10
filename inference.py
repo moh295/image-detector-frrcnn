@@ -109,7 +109,7 @@ if __name__ == '__main__':
     print('image list length',len(image_list))
     count=1
     for i in range(len(image_list)):
-        tensor = image_list[i].convert('RGB')
+        tensor = cv2.cvtColor(image_list[i], cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
         tensor_list.append(tensor)
