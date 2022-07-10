@@ -95,6 +95,7 @@ if __name__ == '__main__':
     print('batch size',batch_size)
     path=args.images+'*.png'
     image_list = []
+    tensor_list=[]
     print('path', path)
     for filename in glob.glob(path):
         im = Image.open(filename)
