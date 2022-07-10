@@ -16,6 +16,7 @@ def extractImages(pathIn, pathOut):
             # resized = resize(image, 500, 375)
             cv2.imwrite( pathOut + "\\frame%d.png" % count, image)     # save frame as JPEG file
             count = count + 1
+            print(pathOut + "\\frame%d.png" % count,'was saved')
         except:pass
 
 def resize(src,w,h):
