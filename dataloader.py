@@ -167,7 +167,6 @@ class VOCDetection(_VOCBase):
         return voc_dict
 
 
-
 def image_folder_loader(image_dir,batch_size):
     transofmer=transforms.Compose([transforms.ToTensor()])
     data = datasets.ImageFolder(root=image_dir, transform=transofmer)
@@ -176,8 +175,6 @@ def image_folder_loader(image_dir,batch_size):
 
 
 def dataloader(batch_size,data_path):
-
-
 
 
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
