@@ -108,7 +108,7 @@ if __name__ == '__main__':
     print('files',files)
     print('sorted',list(sorted(files, key=number)))
     image_list = [cv2.imread(file) for file in files]
-    print(list(sorted(data, key=number)))
+
     count=1
     for i in range(len(image_list)):
         tensor = cv2.cvtColor(image_list[i], cv2.COLOR_BGR2RGB)
