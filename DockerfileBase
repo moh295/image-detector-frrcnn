@@ -3,5 +3,6 @@ WORKDIR /App
 COPY . /App
 RUN pip3 install cython
 RUN pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+RUN pip3 install opencv-python
 
 ENTRYPOINT ["/bin/bash"]
