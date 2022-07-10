@@ -37,9 +37,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     path_to_output_image = save_dir
 
 
-    for perdiction, image in zip(predictions,images):
-        data,tensors=perdiction
-
+    for data, image in zip(predictions,images):
         detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                data['labels'].cpu().detach().numpy(), data[
                                                                    'scores'].cpu().detach().numpy()
@@ -105,7 +103,6 @@ if __name__ == '__main__':
     files = []
     [files.extend(glob.glob(imdir + '*.' + e)) for e in ext]
     image_list = [cv2.imread(file) for file in files]
-
     print('image list length',len(image_list))
     count=1
     for i in range(len(image_list)):
@@ -114,7 +111,6 @@ if __name__ == '__main__':
         tensor=transform(tensor)
         tensor_list.append(tensor)
         image_batch.append(image_list[i])
-
         if len(tensor_list)==batch_size or i ==len(image_list):
             inference_and_save_mobilnet_full_data(model, args.output, image_batch,tensor_list,count, labels_dict)
             count+=batch_size
