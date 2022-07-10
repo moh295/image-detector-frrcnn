@@ -166,14 +166,8 @@ class VOCDetection(_VOCBase):
                 voc_dict[node.tag] = text
         return voc_dict
 
-def demo_data_image():
-    transofmer = transforms.Compose([transforms.ToTensor()])
-    data = datasets.ImageFolder(root='./demo_images', transform=transofmer)
-    image_loader = torch.utils.data.DataLoader(data, batch_size=1, num_workers=4)
-    return image_loader
 
-    print('validation set length', len(val_dataset))
-    return  val_loader
+
 def image_folder_loader(image_dir,batch_size):
     transofmer=transforms.Compose([transforms.ToTensor()])
     data = datasets.ImageFolder(root=image_dir, transform=transofmer)
