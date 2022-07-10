@@ -6,10 +6,10 @@ def extractImages(pathIn, pathOut):
     count = 0
     vidcap = cv2.VideoCapture(pathIn)
     success,image = vidcap.read()
-    # success = True
+    success = True
     while success:
         #vidcap.set(cv2.CAP_PROP_POS_MSEC,(count*1000))    # added this line
-        # success,image = vidcap.read()
+        success,image = vidcap.read()
         print ('Read a new frame: ', success)
 
         try:
