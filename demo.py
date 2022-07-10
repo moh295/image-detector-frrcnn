@@ -94,7 +94,7 @@ if __name__ == '__main__':
     #image= demo_data_image()
 
     # Read the image
-    image = cv2.imread('demo_input.png')
+    image = cv2.cv2.imread('demo_input.png')
 
     # Convert BGR image to RGB image
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
