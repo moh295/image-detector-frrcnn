@@ -26,7 +26,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,labels_dict):
     start = timer()
 
     # start_pred = timer()
-    images =images.to(device)
+    images = list(image.to(device) for image in images)
     # print('prediction started')
     predictions = model(images)
     # end = timer()
