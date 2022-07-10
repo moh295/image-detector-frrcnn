@@ -12,11 +12,19 @@ def extractImages(pathIn, pathOut):
         success,image = vidcap.read()
         print ('Read a new frame: ', success)
 
+        #name the files with (0000) four digits index
+        strCount = str(count)
+        prefix = '0'
+        if len(strCount) < 4:
+            for i in range(3 - len(strCount)):
+                prefix += prefix
+            strCount = prefix + strCount
+
         try:
             # resized = resize(image, 500, 375)
-            cv2.imwrite( pathOut + f"{count}_frame.png", image)     # save frame as JPEG file
+            cv2.imwrite( pathOut + strCount+"_frame.png", image)     # save frame as JPEG file
+            print(pathOut + strCount+"_frame.png was saved")
             count = count + 1
-            print(pathOut + f"{count}_frame.png was saved")
         except:pass
 
 def resize(src,w,h):
