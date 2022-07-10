@@ -10,7 +10,7 @@ import argparse
 from torchvision import transforms
 import glob
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
-labels_dict = ['hand','targetobject']
+labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 

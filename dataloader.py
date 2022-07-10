@@ -102,7 +102,7 @@ class VOCDetection(_VOCBase):
         boxes=[]
         labels=[]
         #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
-        labels_dict = ['hand','targetobject']
+        labels_dict = ['targetobject','hand']
         for lb in target_dict['annotation']['object']:
             # print('lb', lb)
             #  print('hand side', lb['handside'])
