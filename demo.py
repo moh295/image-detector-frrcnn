@@ -4,11 +4,13 @@ from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 from PIL import ImageDraw,Image
+import cv2
 import random
 from bbox import BBox
 from utils_local import tensor_to_PIL
 import argparse
 from torchvision import transforms
+
 
 
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
@@ -90,17 +92,20 @@ if __name__ == '__main__':
     batch_size=1
     print('batch size',batch_size)
     #image= demo_data_image()
-    image = Image.open('demo_input.png')
-    # to_tensor=transforms.ToTensor()
 
-    # DEFINE TRANSFORMS
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-    preprocessing = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        normalize])
-    transformed_sample = preprocessing(image)
+    # Read the image
+    image = cv2.imread('iceland.jpg')
 
-    inference_and_save_mobilnet_full_data(model, '/App/data/', (transformed_sample,), labels_dict)
+    # Convert BGR image to RGB image
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Define a transform to convert
+    # the image to torch tensor
+    transform = transforms.Compose([
+        transforms.ToTensor()
+    ])
+
+    # Convert the image to Torch tensor
+    tensor = transform(image)
+
+    inference_and_save_mobilnet_full_data(model, '/App/data/', (tensor,), labels_dict)
