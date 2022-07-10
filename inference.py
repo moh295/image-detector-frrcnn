@@ -95,10 +95,11 @@ if __name__ == '__main__':
     print('batch size',batch_size)
     path=args.images+'*.png'
     image_list = []
+    print('path', path)
     for filename in glob.glob(path):
         im = Image.open(filename)
         image_list.append(im)
-
+    print('image list length',len(image_list))
     count=1
     for i in range(len(image_list)):
         image = image_list[i].convert('RGB')
