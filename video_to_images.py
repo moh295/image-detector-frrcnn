@@ -28,8 +28,8 @@ def resize(src,w,h):
 
 if __name__=="__main__":
 
-    video_path= 'demo_images/input.mp4'
-    image_folder='data/self-checkout-images/'
+    video_path= 'data/input.mp4'
+    image_folder='data/images/'
     a = argparse.ArgumentParser()
     a.add_argument("--pathIn", help="path to video",default=video_path)
     a.add_argument("--pathOut", help="path to images",default=image_folder)
