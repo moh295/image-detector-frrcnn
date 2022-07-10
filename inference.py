@@ -18,6 +18,8 @@ colors = {'blue': (255, 0, 0), 'green': (0, 255, 0), 'red': (0, 0, 255), 'yellow
           'magenta': (255, 0, 255), 'cyan': (255, 255, 0), 'white': (255, 255, 255), 'black': (0, 0, 0),
           'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
           'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220)}
+def number(filename):
+    return int(filename[9:-4])
 def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
     scale = 1
@@ -104,8 +106,9 @@ if __name__ == '__main__':
     files = []
     [files.extend(glob.glob(imdir + '*.' + e,recursive=True)) for e in ext]
     print('files',files)
+    print('sorted',list(sorted(files, key=number)))
     image_list = [cv2.imread(file) for file in files]
-    print('image list length',len(image_list))
+    print(list(sorted(data, key=number)))
     count=1
     for i in range(len(image_list)):
         tensor = cv2.cvtColor(image_list[i], cv2.COLOR_BGR2RGB)
