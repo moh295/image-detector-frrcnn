@@ -58,7 +58,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
             cv2.putText(draw, f'{category:s} {prob:.3f}', (bbox.left, bbox.top), font,1, color,2, cv2.LINE_AA)
 
 
-        cv2.imwrite(draw, path_to_output_image + str(cnt) + '_demo_output.png')
+        cv2.imwrite( path_to_output_image + str(cnt) + '_demo_output.png',draw)
         print(f'Output image is saved to {path_to_output_image}{cnt}.png')
         cnt += 1
         # image.show()
