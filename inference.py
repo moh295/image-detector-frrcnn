@@ -1,5 +1,4 @@
 import torch
-from dataloader import demo_data_image
 from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
