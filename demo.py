@@ -96,4 +96,4 @@ if __name__ == '__main__':
         transforms.PILToTensor()
     ])
     image=transform(image)
-    inference_and_save_mobilnet_full_data(model, '/App/data/', image, labels_dict)
+    inference_and_save_mobilnet_full_data(model, '/App/data/', (image,), labels_dict)
