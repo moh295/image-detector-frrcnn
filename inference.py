@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     count=1
     for i in range(len(image_list)):
-        image = Image.open(image_list[i]).convert('RGB')
+        image = image_list[i].convert('RGB')
         transform=transforms.Compose([transforms.ToTensor()])
         image=transform(image)
         tensor_list.append(image)
