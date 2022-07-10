@@ -90,7 +90,7 @@ if __name__ == '__main__':
     batch_size=1
     print('batch size',batch_size)
     #image= demo_data_image()
-    image=image = Image.open('demo_input.png')
+    image = Image.open('demo_input.png')
     # to_tensor=transforms.ToTensor()
     image = Image.open(image).convert('RGB')
     transform=transforms.Compose(
