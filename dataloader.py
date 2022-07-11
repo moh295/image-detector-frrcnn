@@ -180,7 +180,7 @@ def dataloader(batch_size,data_path):
     #train with some of the dataset
     start_point=7992
     end_point=23976
-    print('start data',start_point,'end at',end_point)
+    print('start data',start_point,'end at',end_point,'total trainning set',len(train_dataset))
     train_subset=list(range(start_point,end_point))
     train_subset=torch.utils.data.Subset(train_dataset,train_subset)
 
