@@ -29,13 +29,13 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
 
     start = timer()
 
-    # start_pred = timer()
+    start_pred = timer()
     tensors = list(tensor.to(device) for tensor in tensors)
     # print('prediction started')
     predictions = model(tensors)
-    # end = timer()
-    # elapsed = timedelta(seconds=end - start_pred)
-    # print(f'prediction takes {elapsed}')
+    end = timer()
+    elapsed = timedelta(seconds=end - start_pred)
+    print(f'prediction takes {elapsed}')
     path_to_output_image = save_dir
 
 
