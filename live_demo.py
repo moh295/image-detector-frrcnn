@@ -72,10 +72,10 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
 if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--device", help="webcam number e.g: 0 , 1", default=0)
-    a.add_argument("--scale", help="input image scale", default=0.6)
+    a.add_argument("--device",type=int, help="webcam number e.g: 0 , 1", default=0)
+    a.add_argument("--scale",type=int, help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default='data/output/')
-    a.add_argument("--batch", help="batch size", default=60)
+    a.add_argument("--batch",type=int, help="batch size", default=60)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
