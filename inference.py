@@ -15,10 +15,10 @@ labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 font = cv2.FONT_HERSHEY_SIMPLEX
 # Dictionary containing some colors
-colors = {'blue': (255, 0, 0), 'green': (0, 255, 0), 'red': (0, 0, 255), 'yellow': (0, 255, 255),
-          'magenta': (255, 0, 255), 'cyan': (255, 255, 0), 'white': (255, 255, 255), 'black': (0, 0, 0),
+colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange':(223,70,14),'yellow': (255, 255, 0),
+          'magenta': (255, 0, 255), 'cyan': (0, 255, 255), 'white': (255, 255, 255), 'black': (0, 0, 0),
           'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
-          'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220)}
+          'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220),'red 1': (255, 82, 82),'red 2': (255, 82, 82) ,'red 3': (255, 82, 82)}
 
 def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
@@ -53,11 +53,12 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         draw = np.copy(image)
 
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
-            bbox=np.array(bbox).astype(int)
-            category = labels_dict[cls-1]
-            color= colors['red'] if cls==1 else colors['blue']
-            cv2.rectangle(draw,bbox[:2],bbox[2:4], color, 2)
-            cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font,1, color,2, cv2.LINE_AA)
+            bbox = np.array(bbox).astype(int)
+            category = labels_dict[cls - 1]
+            intensity=int(200-200*prob)
+            color = (225,intensity,intensity) if cls == 1 else (intensity,intensity,255)
+            cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
 
 
         cv2.imwrite(path_to_output_image + str(cnt) + '.png',draw)
@@ -111,7 +112,7 @@ if __name__ == '__main__':
 
     count=1
     for i in range(len(image_list)):
-        image=image_resize(image_list[i],args.sacle)
+        image=image_resize(image_list[i],args.scale)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
