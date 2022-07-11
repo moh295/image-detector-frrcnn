@@ -9,6 +9,7 @@ from torchvision import transforms
 import glob
 import cv2
 import numpy as np
+from utils_local import image_resize
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
 labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -19,9 +20,9 @@ colors = {'blue': (255, 0, 0), 'green': (0, 255, 0), 'red': (0, 0, 255), 'yellow
           'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
           'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220)}
 
-def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
+def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,scale,count,labels_dict):
     # apply model on images and save the result
-    scale = 1
+
     prob_thresh = 0.65
     cnt = count
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -42,7 +43,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                data['labels'].cpu().detach().numpy(), data[
                                                                    'scores'].cpu().detach().numpy()
-        detection_bboxes /= scale
+        detection_bboxes *= scale
         # print(detection_probs)
         # print('detection_classes',detection_classes)
         kept_indices = detection_probs > prob_thresh
@@ -94,6 +95,7 @@ if __name__ == '__main__':
 
     #loading/checking data....
     batch_size=60
+    scale=0.5
     print('batch size',batch_size)
     imdir=args.images
     image_list = []
@@ -108,11 +110,12 @@ if __name__ == '__main__':
 
     count=1
     for i in range(len(image_list)):
-        tensor = cv2.cvtColor(image_list[i], cv2.COLOR_BGR2RGB)
+        image=image_resize(image_list[i])
+        tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
         tensor_list.append(tensor)
-        image_batch.append(image_list[i])
+        image_batch.append(image)
         if len(tensor_list)==batch_size or i ==len(image_list):
             inference_and_save_mobilnet_full_data(model, args.output, image_batch,tensor_list,count, labels_dict)
             count+=batch_size

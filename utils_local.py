@@ -28,9 +28,8 @@ def tensor_to_PIL(tensor,normlized=True,mean=(0.5,0.5,0.5),std=(0.5,0.5,0.5)):
     transform = T.ToPILImage()
     return transform(tensor)
 
-def image_resize(img,p):
-    scale_percent = p  # percent of original size(1-100)
-    width = int(img.shape[1] * scale_percent / 100)
-    height = int(img.shape[0] * scale_percent / 100)
+def image_resize(img,scale):
+    width = int(img.shape[1] * scale )
+    height = int(img.shape[0] * scale)
     dim = (width, height)
     return  cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
