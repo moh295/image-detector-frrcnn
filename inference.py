@@ -23,7 +23,7 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
 
-    prob_thresh = 0.1
+    prob_thresh = 0.9
     cnt = count
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -51,7 +51,6 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         detection_classes = detection_classes[kept_indices]
         detection_probs = detection_probs[kept_indices]
         draw = np.copy(image)
-
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
             bbox = np.array(bbox).astype(int)
             category = labels_dict[cls - 1]
@@ -59,19 +58,13 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
             color = (intensity,intensity,255) if cls == 1 else (225,intensity,intensity)
             cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
-
-
         cv2.imwrite(path_to_output_image + str(cnt) + '.png',draw)
         print(f'Output image is saved to {path_to_output_image}{cnt}.png')
         cnt += 1
         # image.show()
-
-
     end = timer()
     elapsed = timedelta(seconds=end-start)
     print(f'full prediction process takes {elapsed}')
-
-
 
 if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
@@ -82,10 +75,6 @@ if __name__ == '__main__':
     a.add_argument("--batch", help="batch size", default=60)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
-
-
-
-
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
@@ -94,10 +83,7 @@ if __name__ == '__main__':
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(params, lr=0.005,
                                 momentum=0.9, weight_decay=0.0005)
-
     #loading/checking data....
-
-
     print('batch size',args.batch)
     imdir=args.images
     image_list = []
@@ -109,7 +95,6 @@ if __name__ == '__main__':
     [files.extend(glob.glob(imdir + '*.' + e))for e in ext]
     files = list(sorted(files))
     image_list = [cv2.imread(file) for file in files]
-
     count=1
     for i in range(len(image_list)):
         image=image_resize(image_list[i],args.scale)
