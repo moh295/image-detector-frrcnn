@@ -43,7 +43,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                data['labels'].cpu().detach().numpy(), data[
                                                                    'scores'].cpu().detach().numpy()
-        # detection_bboxes *= scale
+
         # print(detection_probs)
         # print('detection_classes',detection_classes)
         kept_indices = detection_probs > prob_thresh
@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     #loading/checking data....
 
-    scale=0.5
+
     print('batch size',args.batch)
     imdir=args.images
     image_list = []
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     count=1
     for i in range(len(image_list)):
-        image=image_resize(image_list[i],scale)
+        image=image_resize(image_list[i],args.sacle)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
