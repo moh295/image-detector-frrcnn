@@ -176,7 +176,6 @@ def image_folder_loader(image_dir,batch_size):
 
 def dataloader(batch_size,data_path):
 
-
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
     #train with some of the dataset
     train_subset=list(range(0,int(len(train_dataset)/10)))

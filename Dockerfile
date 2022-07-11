@@ -3,4 +3,4 @@ WORKDIR /App
 COPY . /App
 
 #ENTRYPOINT ["/bin/bash"]
-ENTRYPOINT ["python3","validation.py"]
+ENTRYPOINT ["python3","live_demo.py"]
