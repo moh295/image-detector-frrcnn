@@ -9,6 +9,7 @@ from torchvision import transforms
 import glob
 import cv2
 import numpy as np
+from dataloader import dataloader
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
 labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -53,6 +54,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
         draw = np.copy(image)
 
         for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
+            # bbox = BBox(left=bbox[0], top=bbox[1], right=bbox[2], bottom=bbox[3])
             bbox=np.array(bbox).astype(int)
             category = labels_dict[cls-1]
             color= colors['red'] if cls==1 else colors['blue']
@@ -75,7 +77,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
 if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--images", help="path to input images", default='data/images/')
+    a.add_argument("--dataset", help="path to dataset in PSCAL VOC2007 format", default='data/pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     a.add_argument("--output", help="path to output folder", default='data/output/')
     a.add_argument("--batch", help="batch size", default=30)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)

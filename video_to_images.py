@@ -14,11 +14,7 @@ def extractImages(pathIn, pathOut):
 
         #name the files with (0000) four digits index
         strCount = str(count)
-        prefix = '0'
-        if len(strCount) < 4:
-            for i in range(3 - len(strCount)):
-                prefix += prefix
-            strCount = prefix + strCount
+        strCount = '0' * (4 - len(strCount)) + strCount
 
         try:
             # resized = resize(image, 500, 375)
