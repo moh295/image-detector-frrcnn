@@ -31,9 +31,10 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
     start = timer()
     for images in dataloder:
         # start_pred = timer()
+        annotation = images[1]
         images = list(image.to(device) for image in images[0])
-        annotation=images = list(image.to(device) for image in images[1])
-        print('annotation',annotation[0])
+
+        print('annotation',annotation)
         start_pred = timer()
 
         # print('prediction started')
@@ -45,7 +46,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
 
 
         for data, image in zip(predictions,images):
-            image = tensor_to_PIL(image, normlized=False).convert('RGB')
+            image = tensor_to_PIL(image, normlized=False).convert('BGR')
             detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                    data['labels'].cpu().detach().numpy(), data[
                                                                        'scores'].cpu().detach().numpy()
