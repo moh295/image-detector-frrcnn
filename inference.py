@@ -56,7 +56,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
             bbox = np.array(bbox).astype(int)
             category = labels_dict[cls - 1]
             intensity=int(200-200*prob)
-            color = (225,intensity,intensity) if cls == 1 else (intensity,intensity,255)
+            color = (intensity,intensity,255) if cls == 1 else (225,intensity,intensity)
             cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
 
