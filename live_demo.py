@@ -72,7 +72,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
 if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--images", help="path to input images", default='data/images/')
+    a.add_argument("--device", help="webcam number e.g: 0 , 1", default=0)
     a.add_argument("--scale", help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default='data/output/')
     a.add_argument("--batch", help="batch size", default=60)
@@ -86,28 +86,43 @@ if __name__ == '__main__':
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(params, lr=0.005,
                                 momentum=0.9, weight_decay=0.0005)
-    #loading/checking data....
+    #open cam
+    cap = cv2.VideoCapture(args.device)
     print('batch size',args.batch)
     imdir=args.images
     image_list = []
     tensor_list=[]
     image_batch=[]
-    print('loadin images form path[', imdir,'].....')
-    ext = ['png', 'jpg', 'gif']  # Add image formats here
-    files = []
-    [files.extend(glob.glob(imdir + '*.' + e))for e in ext]
-    files = list(sorted(files))
-    image_list = [cv2.imread(file) for file in files]
+
+
+
     count=1
-    for i in range(len(image_list)):
-        image=image_resize(image_list[i],args.scale)
+    while True:
+
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        frame = image_resize(frame, 0.5)
+        # Our operations on the frame come here
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # # Display the resulting frame
+        # cv2.imshow('frame', frame)
+        # cv2.imshow('gray', gray)
+        # if cv2.waitKey(20) & 0xFF == ord('q'):
+        #     break
+
+        image=image_resize(frame,args.scale)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
         tensor_list.append(tensor)
         image_batch.append(image)
-        if len(tensor_list)==args.batch or i ==len(image_list):
+        if len(tensor_list)==args.batch :
             inference_and_save_mobilnet_full_data(model, args.output,image_batch,tensor_list,count, labels_dict)
             count+=args.batch
             tensor_list = []
             image_batch=[]
+
+    # When everything done, release the capture
+    cap.release()
+    cv2.destroyAllWindows()
