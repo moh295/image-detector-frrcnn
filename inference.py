@@ -43,7 +43,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,scale,co
         detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                data['labels'].cpu().detach().numpy(), data[
                                                                    'scores'].cpu().detach().numpy()
-        detection_bboxes *= scale
+        # detection_bboxes *= scale
         # print(detection_probs)
         # print('detection_classes',detection_classes)
         kept_indices = detection_probs > prob_thresh
