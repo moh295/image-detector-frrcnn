@@ -20,10 +20,10 @@ colors = {'blue': (255, 0, 0), 'green': (0, 255, 0), 'red': (0, 0, 255), 'yellow
           'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
           'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220)}
 
-def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,scale,count,labels_dict):
+def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
 
-    prob_thresh = 0.65
+    prob_thresh = 0.1
     cnt = count
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
         tensor_list.append(tensor)
         image_batch.append(image)
         if len(tensor_list)==batch_size or i ==len(image_list):
-            inference_and_save_mobilnet_full_data(model, args.output,image_batch,tensor_list, args.scale,count, labels_dict)
+            inference_and_save_mobilnet_full_data(model, args.output,image_batch,tensor_list,count, labels_dict)
             count+=batch_size
             tensor_list = []
             image_batch=[]
