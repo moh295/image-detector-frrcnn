@@ -178,7 +178,10 @@ def dataloader(batch_size,data_path):
 
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
     #train with some of the dataset
-    train_subset=list(range(0,int(len(train_dataset)/10)))
+    start_point=int(len(train_dataset)/10)
+    end_point=int(len(train_dataset)/30)
+    print('start data',start_point,'end at',end_point)
+    train_subset=list(range(start_point,end_point))
     train_subset=torch.utils.data.Subset(train_dataset,train_subset)
 
     train_loader = DataLoader(train_subset, batch_size=batch_size,

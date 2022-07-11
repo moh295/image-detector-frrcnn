@@ -39,14 +39,13 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
 
 if __name__ == '__main__':
-    new_checkpoint = '/App/data/new_torch_trained_fasterrcnn.pth'
+    new_checkpoint = '/App/data/torch_trained_fasterrcnn_20x10p-30p.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--checkpoint", help="the weight dirctory for the trained model",
+    a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
-    a.add_argument("--dataset", help="path to dataset with PSCAL VOC 2007 format", default = './data/VOCdevkit2007_handobj_100K/VOC2007')
-    a.add_argument("--output", help="new checkpoint file", default=new_checkpoint)
+    a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
-    a.add_argument("--batch", help="batch size", default=30)
+    a.add_argument("--batch",type=int, help="batch size", default=30)
     args = a.parse_args()
 
     #loading model
