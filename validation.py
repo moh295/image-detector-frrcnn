@@ -43,7 +43,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
 
 
         for data, image in zip(predictions,images):
-            image = tensor_to_PIL(image, normlized=False)
+            image = tensor_to_PIL(image, normlized=False).convert('RGB')
             detection_bboxes, detection_classes, detection_probs = data['boxes'].cpu().detach().numpy(), \
                                                                    data['labels'].cpu().detach().numpy(), data[
                                                                        'scores'].cpu().detach().numpy()
