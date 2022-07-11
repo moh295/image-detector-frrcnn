@@ -23,7 +23,7 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
 
-    prob_thresh = 0.1
+    prob_thresh = 0.38
     cnt = count
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
