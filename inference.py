@@ -70,9 +70,9 @@ if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--images", help="path to input images", default='data/images/')
-    a.add_argument("--scale", help="input image scale", default=0.6)
+    a.add_argument("--scale",type=int, help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default='data/output/')
-    a.add_argument("--batch", help="batch size", default=60)
+    a.add_argument("--batch",type=int, help="batch size", default=60)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model

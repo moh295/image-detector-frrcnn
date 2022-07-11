@@ -23,7 +23,7 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,labels_dict):
     # apply model on images and save the result
 
-    prob_thresh = 0.9
+    prob_thresh = 0.1
     cnt = count
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -59,7 +59,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
             cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
         # cv2.imwrite(path_to_output_image + str(cnt) + '.png',draw)
-        cv2.imshow('output image',draw)
+        cv2.imshow('output image',image_resize(draw,2.5))
         cv2.waitKey(1)
 
         print(f'Output image is saved to {path_to_output_image}{cnt}.png')
