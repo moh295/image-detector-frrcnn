@@ -89,7 +89,6 @@ if __name__ == '__main__':
     #open cam
     cap = cv2.VideoCapture(args.device)
     print('batch size',args.batch)
-    imdir=args.images
     image_list = []
     tensor_list=[]
     image_batch=[]
