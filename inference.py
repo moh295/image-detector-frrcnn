@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     count=1
     for i in range(len(image_list)):
-        image=image_resize(image_list[i])
+        image=image_resize(image_list[i],scale)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
