@@ -76,6 +76,7 @@ if __name__ == '__main__':
     checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--images", help="path to input images", default='data/images/')
+    a.add_argument("--scale", help="input image scale", default='data/images/')
     a.add_argument("--output", help="path to output folder", default='data/output/')
     a.add_argument("--batch", help="batch size", default=30)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
@@ -117,7 +118,7 @@ if __name__ == '__main__':
         tensor_list.append(tensor)
         image_batch.append(image)
         if len(tensor_list)==batch_size or i ==len(image_list):
-            inference_and_save_mobilnet_full_data(model, args.output, image_batch,tensor_list,count, labels_dict)
+            inference_and_save_mobilnet_full_data(model, args.output, args.scale,image_batch,tensor_list,count, labels_dict)
             count+=batch_size
             tensor_list = []
             image_batch=[]
