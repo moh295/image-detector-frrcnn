@@ -4,4 +4,4 @@ COPY . /App
 
 #ENTRYPOINT ["/bin/bash"]
 #ENTRYPOINT ["python3","live_demo.py"]
-ENTRYPOINT ["python3","train.py","--checkpoint", "torch_trained_fasterrcnn.pth"]
+ENTRYPOINT ["python3","train.py","--checkpoint", "data/torch_trained_fasterrcnn.pth"]
