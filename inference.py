@@ -118,7 +118,7 @@ if __name__ == '__main__':
         tensor_list.append(tensor)
         image_batch.append(image)
         if len(tensor_list)==batch_size or i ==len(image_list):
-            inference_and_save_mobilnet_full_data(model, args.output, args.scale,image_batch,tensor_list,count, labels_dict)
+            inference_and_save_mobilnet_full_data(model, args.output,image_batch,tensor_list, args.scale,count, labels_dict)
             count+=batch_size
             tensor_list = []
             image_batch=[]
