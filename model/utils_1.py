@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional, TypeVar, Callable, Tuple, Union
 
 from torch import nn
 
-from utils import sequence_to_str
+from model.utils import sequence_to_str
 from model.api import WeightsEnum
 
 
