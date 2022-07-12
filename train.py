@@ -39,7 +39,7 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
 
 if __name__ == '__main__':
-    new_checkpoint = '/App/data/torch_trained_fasterrcnn_20x10p-30p.pth'
+    new_checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     train_loader, trainval_loader, val_loader= dataloader(batch_size,args.dataset)
     #trainging ....
     epochs=20
-    print_freq=100
+    print_freq=500
     stat_dic=obj_detcetion_training(model,epochs,train_loader,val_loader,print_freq)
     print('saving checkpoint to ', args.output)
     torch.save(stat_dic, args.output)
