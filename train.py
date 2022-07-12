@@ -46,6 +46,9 @@ if __name__ == '__main__':
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
     a.add_argument("--batch",type=int, help="batch size", default=30)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=20)
+    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
+
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
                    default='data/pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     args = a.parse_args()
@@ -63,8 +66,8 @@ if __name__ == '__main__':
     print('batch size',args.batch)
     train_loader, trainval_loader, val_loader= dataloader(args.batch,args.dataset)
     #trainging ....
-    epochs=20
-    print_freq=500
-    stat_dic=obj_detcetion_training(model,epochs,train_loader,val_loader,print_freq)
+
+
+    stat_dic=obj_detcetion_training(model,args.epoch,train_loader,val_loader,args.print_freq)
     print('saving checkpoint to ', args.output)
     torch.save(stat_dic, args.output)
