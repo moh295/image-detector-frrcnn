@@ -5,7 +5,7 @@ from dataclasses import dataclass, fields
 from inspect import signature
 from typing import Any, Callable, Dict, Mapping, cast
 
-from model.utils_1 import StrEnum
+from model.utils import StrEnum
 
 from model.internally_replaced_utils import load_state_dict_from_url
 
