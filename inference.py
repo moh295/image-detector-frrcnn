@@ -1,6 +1,6 @@
 import torch
 # from torchvision import models
-from model.fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
 from timeit import default_timer as timer
 from datetime import timedelta
 import random
