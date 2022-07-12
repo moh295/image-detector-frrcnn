@@ -5,7 +5,7 @@ from typing import Any, Callable, List, Optional, Sequence
 import torch
 from torch import nn, Tensor
 
-from torchvision.ops.misc import Conv2dNormActivation, SqueezeExcitation as SElayer
+from model.misc import Conv2dNormActivation, SqueezeExcitation as SElayer
 from model.presets import ImageClassification
 from model.utils_2 import _log_api_usage_once
 from model.api import WeightsEnum, Weights
