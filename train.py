@@ -59,9 +59,9 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     #loading/checking data....
-    batch_size=5
-    print('batch size',batch_size)
-    train_loader, trainval_loader, val_loader= dataloader(batch_size,args.dataset)
+
+    print('batch size',args.batch)
+    train_loader, trainval_loader, val_loader= dataloader(args.batch,args.dataset)
     #trainging ....
     epochs=20
     print_freq=500
