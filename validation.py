@@ -1,5 +1,5 @@
 import torch
-from torchvision import models
+from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
 from timeit import default_timer as timer
 from datetime import timedelta
 import random
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer
