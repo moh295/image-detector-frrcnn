@@ -6,7 +6,8 @@ from torch import nn
 from torchvision.ops import MultiScaleRoIAlign
 
 from torchvision.ops import misc as misc_nn_ops
-from torchvision.transforms._presets import ObjectDetection
+# from torchvision.transforms._presets import ObjectDetection
+from presets import ObjectDetection
 from torchvision.models._api import WeightsEnum, Weights
 from torchvision.models._meta import _COCO_CATEGORIES
 from torchvision.models._utils import handle_legacy_interface, _ovewrite_value_param
