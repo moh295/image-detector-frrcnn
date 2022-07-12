@@ -8,9 +8,9 @@ from torchvision.ops import MultiScaleRoIAlign
 from torchvision.ops import misc as misc_nn_ops
 # from torchvision.transforms._presets import ObjectDetection
 from model.presets import ObjectDetection
-from torchvision.models.api import WeightsEnum, Weights
-from torchvision.models.meta import _COCO_CATEGORIES
-from torchvision.models.utils import handle_legacy_interface, _ovewrite_value_param
+from model.api import WeightsEnum, Weights
+from model.meta import _COCO_CATEGORIES
+from model.utils_1 import handle_legacy_interface, _ovewrite_value_param
 from torchvision.models.mobilenetv3 import MobileNet_V3_Large_Weights, mobilenet_v3_large
 from torchvision.models.resnet import ResNet50_Weights, resnet50
 from torchvision.models.detection._utils import overwrite_eps
