@@ -33,12 +33,10 @@ __all__ = [
     "fasterrcnn_mobilenet_v3_large_320_fpn",
 ]
 
-
 def _default_anchorgen():
     anchor_sizes = ((32,), (64,), (128,), (256,), (512,))
     aspect_ratios = ((0.5, 1.0, 2.0),) * len(anchor_sizes)
     return AnchorGenerator(anchor_sizes, aspect_ratios)
-
 
 class FasterRCNN(GeneralizedRCNN):
     def __init__(
