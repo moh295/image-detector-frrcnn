@@ -11,6 +11,8 @@ Mb6TNx0hR8
 ZzTe4LcpaA1657108798
 ssh guillermo@192.168.178.137
 vdP93907qi
+zip -r /media/workspace/hand_object_datasets/output.zip /media/workspace/hand_object_datasets/output
+scp -r guillermo@192.168.178.137:/media/workspace/hand_object_datasets/output.zip output.zip
 
 screen -dRaA -S torch
 
