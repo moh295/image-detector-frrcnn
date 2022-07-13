@@ -31,12 +31,8 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
     start = timer()
     for images in dataloder:
         # start_pred = timer()
-        annotation = images[1]
         images = list(image.to(device) for image in images[0])
-
-        print('annotation',annotation)
         start_pred = timer()
-
         # print('prediction started')
         predictions = model(images)
         end = timer()
