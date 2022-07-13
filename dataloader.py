@@ -180,7 +180,7 @@ def dataloader(batch_size,data_path):
     #train with some of the dataset
     # start_point=7992
     # end_point=23976
-    start_point = 23976
+    start_point = 0
     end_point = 79921
     print('start data',start_point,'end at',end_point,'total trainning set',len(train_dataset))
     train_subset=list(range(start_point,end_point))
