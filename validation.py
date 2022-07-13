@@ -62,7 +62,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
                 if cls == 1:
                     cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
                     cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
-                elif prob > 0.85:
+                elif prob > 0.68:
                     cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
                     cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
             cv2.imwrite(path_to_output_image + str(cnt) + '.png',draw)
