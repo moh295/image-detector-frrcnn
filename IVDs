@@ -30,4 +30,4 @@ git pull ; docker build . -t image-detector-frrcnn; docker run -it --privileged 
 
 python3 live_demo.py --batch 1  --checkpoint data/torch_trained_fasterrcnn_20x10p-30p.pth
 
-python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --images
+python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --scale 1
