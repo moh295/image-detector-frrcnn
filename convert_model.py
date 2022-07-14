@@ -77,12 +77,12 @@ if __name__ == '__main__':
     args = a.parse_args()
 
     #loading model
-    model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
 
     batch_size=1
     print('batch size',batch_size)
-    x = [torch.rand(batch_size, 300, 400).to(device), torch.rand(batch_size, 500, 400).to(device)]
+    x = [torch.rand(batch_size, 300, 400), torch.rand(batch_size, 500, 400)]
     predictions = model(x)
     torch.onnx.export(model, x, "/App/data/faster_rcnn.onnx", opset_version = 11)
