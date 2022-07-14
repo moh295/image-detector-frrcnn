@@ -41,4 +41,4 @@ if __name__=="__main__":
     args = a.parse_args()
     print(args)
 
-    extractImages(args.pathIn, args.pathOut)
+    extractImages(args.input, args.output)
