@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     #loading model
     # model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
-    model=models.detection.fasterrcnn_resnet50_fpn(True)
+    model=models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
     # model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
 
