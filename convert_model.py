@@ -1,6 +1,5 @@
 import torch
-# from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
-from torchvision import models
+from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
 from timeit import default_timer as timer
 from datetime import timedelta
 from PIL import ImageDraw,Image
@@ -78,13 +77,12 @@ if __name__ == '__main__':
     args = a.parse_args()
 
     #loading model
-    # model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
-    model=models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-    # model.load_state_dict(torch.load(args.checkpoint))
+    model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
+    model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
 
     batch_size=1
     print('batch size',batch_size)
-    x = [torch.rand(batch_size, 300, 400), torch.rand(batch_size, 500, 400)]
+    x = [torch.rand(batch_size, 100, 200), torch.rand(batch_size, 100, 200)]
     predictions = model(x)
     torch.onnx.export(model, x, "/App/data/faster_rcnn.onnx", opset_version = 11)
