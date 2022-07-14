@@ -73,7 +73,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-    checkpoint = '/App/data/torch_trained_fasterrcnn.pth'
+    checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--images", help="path to input images", default='data/images/')
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
