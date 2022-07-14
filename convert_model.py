@@ -1,5 +1,6 @@
 import torch
-from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+# from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 from PIL import ImageDraw,Image
@@ -77,7 +78,8 @@ if __name__ == '__main__':
     args = a.parse_args()
 
     #loading model
-    model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
+    # model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False)
+    model=models.detection.fasterrcnn_resnet50_fpn(True)
     # model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
 
