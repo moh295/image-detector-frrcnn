@@ -36,8 +36,8 @@ if __name__=="__main__":
     video_path= 'data/input.mp4'
     image_folder='data/images/'
     a = argparse.ArgumentParser()
-    a.add_argument("--pathIn", help="path to video",default=video_path)
-    a.add_argument("--pathOut", help="path to images",default=image_folder)
+    a.add_argument("--input", help="path to video",default=video_path)
+    a.add_argument("--output", help="path to images folder ",default=image_folder)
     args = a.parse_args()
     print(args)
 
