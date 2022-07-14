@@ -85,4 +85,4 @@ if __name__ == '__main__':
     print('batch size',batch_size)
     x = [torch.rand(batch_size, 300, 400).to(device), torch.rand(batch_size, 500, 400).to(device)]
     predictions = model(x)
-    torch.onnx.export(model, x, "faster_rcnn.onnx", opset_version = 11)
+    torch.onnx.export(model, x, "/App/data/faster_rcnn.onnx", opset_version = 11)
