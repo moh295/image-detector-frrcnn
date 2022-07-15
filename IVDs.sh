@@ -34,3 +34,9 @@ python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --scale
 
 trtexec --onnx=faster_rcnn.onnx --saveEngine=frrcnn_engine.trt
 export PATH=/usr/src/tensorrt/bin:$PATH
+
+
+from PIL import Image, ImageOps, ImageEnhance, PILLOW_VERSION
+
+python3 -c "from PIL PILLOW_VERSION"
+python3 -c "import PIL;print( PIL.__version__)"
