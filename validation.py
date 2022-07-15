@@ -88,7 +88,7 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model = models.detectionfasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer
