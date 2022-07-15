@@ -2,7 +2,8 @@ FROM python
 WORKDIR /App
 COPY . /App
 
-RUN pip3 install --upgrade pip
+pip install numpy pip3 install --upgrade pip
+RUN pip3 install numpy
 RUN pip3 install cython
 RUN pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 RUN pip3 install opencv-python
