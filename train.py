@@ -7,6 +7,7 @@ from timeit import default_timer as timer
 from datetime import timedelta
 from engine import train_one_epoch, evaluate
 import argparse
+import json
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -39,7 +40,14 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
 
 if __name__ == '__main__':
-    new_checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
+
+    file = 'config.json'
+    with open(file) as json_data_file:
+        config = json.load(json_data_file)
+    root = config["data root"]
+    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+
+    new_checkpoint = root+'new_torch_trained_fasterrcnn.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
@@ -50,7 +58,7 @@ if __name__ == '__main__':
     a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
 
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
-                   default='data/pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
+                   default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     args = a.parse_args()
 
     #loading model
