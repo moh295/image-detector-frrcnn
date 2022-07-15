@@ -102,15 +102,17 @@ class VOCDetection(_VOCBase):
         boxes=[]
         labels=[]
         #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
-        labels_dict = ['targetobject','hand']
+        labels_dict = ['self' ,'other_person' , 'non_portable_object' ,' portable_object','cont_R_hand','cont_L_hand','free_R_hand','free_L_hand']
+        id = [i for i in range(1, len(labels_dict) + 1)]
         for lb in target_dict['annotation']['object']:
-            # print('lb', lb)
-            #  print('hand side', lb['handside'])
-            # print(lb['name'])
-            # print('label',lb['name'])
-            id=[i for i in range(1,len(labels_dict)+1)]
+            print('lb', lb)
+            print('hand side', lb['handside'])
+            print(lb['name'])
+            print('label',lb['name'])
+
             for i in range(len(labels_dict)):
-                if labels_dict[i]==lb['name']:
+                if lb['name']=='hand':
+
                     labels.append(id[i])
             if len(labels):
                 # print('pass',lb['name'])

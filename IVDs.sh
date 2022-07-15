@@ -14,7 +14,7 @@ vdP93907qi
 
 zip -r /media/workspace/hand_object_datasets/output.zip /media/workspace/hand_object_datasets/output
 scp -r guillermo@192.168.178.143:/media/workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth torch_trained_fasterrcnn_100p.pth
-scp -r guillermo@192.168.178.137:/media/workspace/hand_object_datasets/output_new.zip output_new.zip
+scp -r guillermo@192.168.178.137:/media/workspace/hand_object_datasets/ho_full_dataset.zip ho_full_dataset.zip
 
 
 screen -dRaA -S torch
