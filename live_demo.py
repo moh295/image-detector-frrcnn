@@ -10,6 +10,7 @@ import glob
 import cv2
 import numpy as np
 from utils_local import image_resize
+import json
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
 labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -75,11 +76,15 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-    checkpoint = '/media//workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth'
+    file = 'config.json'
+    with open(file) as json_data_file:
+        config = json.load(json_data_file)
+    root = config["data root"]
+    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--device",type=int, help="webcam number e.g: 0 , 1", default=0)
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output", help="path to output folder", default='data/output/')
+    a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=1)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()

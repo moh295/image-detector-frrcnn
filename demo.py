@@ -8,6 +8,7 @@ from bbox import BBox
 from utils_local import tensor_to_PIL
 import argparse
 from torchvision import transforms
+import json
 
 
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
@@ -71,9 +72,13 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,labels_dict):
 
 
 if __name__ == '__main__':
-
+    file = 'config.json'
+    with open(file) as json_data_file:
+        config = json.load(json_data_file)
+    root = config["data root"]
+    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--checkpoint", help="the weight dirctory for the trained model",default='/App/data/torch_trained_fasterrcnn.pth')
+    a.add_argument("--checkpoint", help="the weight dirctory for the trained model",default=root+'torch_trained_fasterrcnn.pth')
     args = a.parse_args()
 
     #loading model
@@ -94,4 +99,4 @@ if __name__ == '__main__':
     image = Image.open(image).convert('RGB')
     transform=transforms.Compose([transforms.ToTensor()])
     image=transform(image)
-    inference_and_save_mobilnet_full_data(model, '/App/data/', (image,), labels_dict)
+    inference_and_save_mobilnet_full_data(model, root, (image,), labels_dict)

@@ -27,22 +27,11 @@ git pull; docker build . -t image-detector-frrcnn-base -f DockerfileBase
 rm images.zip; zip -r images.zip output;aws s3 cp images.zip s3://systemimages;rm output/*.png
 
 git pull ; docker build . -t image-detector-frrcnn; docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data --shm-size 50G image-detector-frrcnn
-
 python3 live_demo.py --batch 1  --checkpoint data/torch_trained_fasterrcnn_20x10p-30p.pth
-
 python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --scale 1
 
+
 trtexec --onnx=faster_rcnn.onnx --saveEngine=frrcnn_engine.trt
-export PATH=/usr/src/tensorrt/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-
-export PATH=/usr/local/cuda/bin:$PATH
-
-
-from PIL import Image, ImageOps, ImageEnhance, PILLOW_VERSION
-
-python3 -c "from PIL PILLOW_VERSION"
 python3 -c "import torch ;print(torch.cuda.is_available)"
-docker build . -t new-torch -f DockerfileBase2
-docker run -it --privileged new-torch
+
 
