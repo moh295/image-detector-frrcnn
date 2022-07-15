@@ -34,9 +34,13 @@ python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --scale
 
 trtexec --onnx=faster_rcnn.onnx --saveEngine=frrcnn_engine.trt
 export PATH=/usr/src/tensorrt/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+export PATH=/usr/local/cuda/bin:$PATH
 
 
 from PIL import Image, ImageOps, ImageEnhance, PILLOW_VERSION
 
 python3 -c "from PIL PILLOW_VERSION"
-python3 -c "import PIL;print( PIL.__version__)"
+python3 -c "import torch ;print(torch.cuda.is_available)"
+
