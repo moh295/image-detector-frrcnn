@@ -76,7 +76,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
 
 if __name__ == '__main__':
 
-    config=json.load('conig.json')
+    config=json.load('config.json')
     root=config["data root"]
     checkpoint = root+'torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
