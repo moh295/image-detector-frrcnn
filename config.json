@@ -1,3 +1,4 @@
 {
-"data root": "/media/workspace/hand_object_datasets/"
+// "data root": "/media/workspace/hand_object_datasets/"
+"data root": "data/"
 }
