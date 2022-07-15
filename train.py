@@ -2,7 +2,7 @@ import torch
 from dataloader import dataloader
 import torch.nn as nn
 import torch.optim as optim
-from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 from engine import train_one_epoch, evaluate
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     args = a.parse_args()
 
     #loading model
-    model =fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=True).to(device)
+    model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     # model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(pretrained=True).to(device)
     if args.checkpoint:
         model.load_state_dict(torch.load(args.checkpoint))

@@ -1,5 +1,5 @@
 import torch
-from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 import random
@@ -75,7 +75,7 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-    checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
+    checkpoint = '/media//workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--device",type=int, help="webcam number e.g: 0 , 1", default=0)
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer

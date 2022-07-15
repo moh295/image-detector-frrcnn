@@ -1,6 +1,5 @@
 import torch
-# from torchvision import models
-from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 import random
@@ -11,6 +10,7 @@ import glob
 import cv2
 import numpy as np
 from utils_local import image_resize
+import json
 #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
 labels_dict = ['targetobject','hand']
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -73,16 +73,20 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-    checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
+
+    config = json.load('conig.json')
+    root = config["data root"]
+    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+
     a = argparse.ArgumentParser()
-    a.add_argument("--images", help="path to input images", default='data/images/')
+    a.add_argument("--images", help="path to input images", default=root+'images/')
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output", help="path to output folder", default='data/output/')
+    a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=60)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer

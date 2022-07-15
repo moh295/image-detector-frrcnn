@@ -1,5 +1,5 @@
 import torch
-from fasterRCNN import fasterrcnn_mobilenet_v3_large_320_fpn
+from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
 import random
@@ -7,6 +7,7 @@ from bbox import BBox
 import argparse
 from torchvision import transforms
 import glob
+import json
 import cv2
 import numpy as np
 from utils_local import image_resize ,tensor_to_PIL
@@ -74,16 +75,19 @@ def inference_and_save_mobilnet_full_data(model,save_dir,dataloder):
         print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-    checkpoint = '/App/data/torch_trained_fasterrcnn_100p.pth'
+
+    config=json.load('conig.json')
+    root=config["data root"]
+    checkpoint = root+'torch_trained_fasterrcnn_100p.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--dataset", help="PSCAL VOC2007 format folder", default='data/pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
+    a.add_argument("--dataset", help="PSCAL VOC2007 format folder", default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output", help="path to output folder", default='data/output/')
+    a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=60)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
+    model = models.detectionfasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     model.load_state_dict(torch.load(args.checkpoint))
     model.eval()
     # construct an optimizer
