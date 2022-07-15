@@ -44,4 +44,5 @@ from PIL import Image, ImageOps, ImageEnhance, PILLOW_VERSION
 python3 -c "from PIL PILLOW_VERSION"
 python3 -c "import torch ;print(torch.cuda.is_available)"
 docker build . -t new-torch -f DockerfileBase2
+docker run -it --privileged new-torch
 
