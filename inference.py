@@ -73,8 +73,9 @@ def inference_and_save_mobilnet_full_data(model,save_dir,images,tensors,count,la
     print(f'full prediction process takes {elapsed}')
 
 if __name__ == '__main__':
-
-    config = json.load('config.json')
+    file='config.json'
+    with open(file) as json_data_file:
+        config= json.load(json_data_file)
     root = config["data root"]
     checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
 
