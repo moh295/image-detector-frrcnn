@@ -39,7 +39,7 @@ if __name__ == '__main__':
             init_vid = False
             height, width, layers = image.shape
             fps = 30
-            model.create_video(width,height,fps)
+            model.create_video(width,height,fps,args.output)
 
 
         image=image_resize(image,args.scale)
