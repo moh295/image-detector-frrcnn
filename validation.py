@@ -89,7 +89,7 @@ if __name__ == '__main__':
     args = a.parse_args()
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
-    model.load_state_dict(torch.load(args.checkpoint))
+    model.load_state_dict(torch.load(args.checkpoint,map_location=torch.device(device)))
     model.eval()
     # construct an optimizer
     params = [p for p in model.parameters() if p.requires_grad]
