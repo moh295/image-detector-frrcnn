@@ -15,11 +15,13 @@ class FrRCNN:
         self.model.load_state_dict(torch.load(checkpoint, map_location=torch.device(device)))
         self.model.eval()
 
+
+
     def predict(self,
                 save_dir,
                 tensors,images, count=1,
                 save=False,show=False,
-                show_vid=False, return_rgp=False):
+                show_vid=False, save_vid=False):
         # apply model on images and save the result
 
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -81,9 +83,14 @@ class FrRCNN:
             if show_vid:
                 cv2.imshow('output image', image_resize(draw, 2))
                 cv2.waitKey(1)
-            if return_rgp:
-                return draw
+            if save_vid:
+                self.video.write(draw)
 
         end = timer()
         elapsed = timedelta(seconds=end - start)
         print(f'full prediction process takes {elapsed}')
+
+    def create_video(self, width, height, fps, output):
+        self.video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*'DIVX'), fps, (width, height))
+    def realse_vid(self):
+        self.video.release()

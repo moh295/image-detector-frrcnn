@@ -36,10 +36,12 @@ if __name__ == '__main__':
         print('Read a new frame: ', success)
         #for first frame only
         if init_vid:
-            init_vid=False
+            init_vid = False
             height, width, layers = image.shape
             fps = 30
-            video = cv2.VideoWriter(args.output, cv2.VideoWriter_fourcc(*'DIVX'), fps, (width, height))
+            model.create_video(width,height,fps)
+
+
         image=image_resize(image,args.scale)
         image_list.append(image)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -48,13 +50,13 @@ if __name__ == '__main__':
         tensor_list.append(tensor)
         image_batch.append(image)
         if len(tensor_list)==args.batch:
-            frame=model.predict(args.output, tensors=tensor_list,return_rgp=True,count=count,images=image_batch)
-            video.write(frame)
+            frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,images=image_batch)
+
             count+=args.batch
             tensor_list = []
             image_batch=[]
     #check if there is still images in the list in case the prvieos loop break befor len(tensor_list)==args.batch
     if len(tensor_list):
-        frame = model.predict(args.output, tensors=tensor_list, return_rgp=True, count=count, images=image_batch)
-        video.write(frame)
-    video.release()
+        model.predict(args.output, tensors=tensor_list, save_vid=True, count=count, images=image_batch)
+
+    model.realse_vid()
