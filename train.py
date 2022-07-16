@@ -54,7 +54,7 @@ if __name__ == '__main__':
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
     a.add_argument("--batch",type=int, help="batch size", default=30)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=20)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=8)
     a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
 
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
@@ -63,9 +63,8 @@ if __name__ == '__main__':
 
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
-    # model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(pretrained=True).to(device)
     if args.checkpoint:
-        model.load_state_dict(torch.load(args.checkpoint))
+        model.load_state_dict(torch.load(checkpoint, map_location=torch.device(device)))
     model.eval()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
