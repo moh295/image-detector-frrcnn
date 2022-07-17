@@ -106,12 +106,6 @@ class VOCDetection(_VOCBase):
         labels_dict = ['targetobject', 'hand']
         id = [i for i in range(1, len(labels_dict) + 1)]
         for lb in target_dict['annotation']['object']:
-            # print('lb', lb)
-            # print('label', lb['name'])
-            # if lb['name']=='hand':
-            #     print('hand side', lb['handside'])
-
-
             if lb['name']=='hand':
                 labels.append(2)
             else:labels.append(1)

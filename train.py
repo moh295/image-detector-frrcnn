@@ -47,7 +47,7 @@ if __name__ == '__main__':
     root = config["data root"]
     checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
 
-    new_checkpoint = root+'new_torch_trained_fasterrcnn.pth'
+    new_checkpoint = root+'retrain_fasterrcnn_80k.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
