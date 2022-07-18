@@ -135,7 +135,7 @@ def re_labeling(target):
             box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
             box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
             boxes.append(box)
-            hands_temp_info.append([boxes[-1], labels[-1], objects_temp_inf])
+            hands_temp_info.append([box, labels[-1], objects_temp_inf])
 
         # object annotations
         elif lb['name'] == 'targetobject':
@@ -185,7 +185,7 @@ def re_labeling(target):
                             max_overlap = bbx_overlap
                             max_overalp_at = inx
                 _, _, objec_on_hand = hands_temp_info[max_overalp_at]
-                print('max_overalp_at',max_overalp_at,hands_temp_info)
+
                 labels.append(objec_on_hand)
 
 
@@ -201,6 +201,7 @@ def re_labeling(target):
                             max_overalp_at = inx
                 _, _, objec_on_hand = hands_temp_info[max_overalp_at]
                 labels.append(objec_on_hand)
+            print('max_overalp_at', max_overalp_at, hands_temp_info)
 
 
     return boxes, labels

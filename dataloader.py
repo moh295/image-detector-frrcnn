@@ -21,9 +21,29 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 import transforms as T
 import utils
+import  json
+import argparse
+from utils_local import tensor_to_numpy_cv2 , re_labeling
+import cv2
+import numpy as np
 
 
+font = cv2.FONT_HERSHEY_SIMPLEX
+# Dictionary containing some colors
+colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange': (223, 70, 14),
+          'yellow': (255, 255, 0),
+          'magenta': (255, 0, 255), 'cyan': (0, 255, 255), 'white': (255, 255, 255), 'black': (0, 0, 0),
+          'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
+          'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220), 'red 1': (255, 82, 82),
+          'red 2': (255, 82, 82), 'red 3': (255, 82, 82)}
+# labels_dict = ['targetobject', 'hand']
 
+# no contact 0 self=1, other person =2 portable object=3 , non portable =4
+#new labeling Hand_free_R =1 ,Hand_free_L=2,Hand_cont_R=3,Hand_cont_L=4  ,person_=5 ,person_L=6 ,person_LR=7,portable_R =8 ,portable_L=9, portable_LR=10
+# labels_dict = ['Hand_free_R','Hand_free_L','Hand_cont_R','Hand_cont_L' ,'person_R','person_L' ,'person_LR','portable_R' ,'portable_L', 'portable_LR']
+labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
+             'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
+             'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
 
 def get_transform(train):
     transforms = []
@@ -99,27 +119,9 @@ class VOCDetection(_VOCBase):
         """
         img = Image.open(self.images[index]).convert("RGB")
         target_dict = self.parse_voc_xml(ET_parse(self.annotations[index]).getroot())
-        boxes=[]
-        labels=[]
-        #labels_dict=['aeroplane','bicycle','bird','boat','bottle','bus','car','cat','dog','chair','cow','diningtable','horse','motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
-        #labels_dict = ['self' ,'other_person' , 'non_portable_object' ,' portable_object','cont_R_hand','cont_L_hand','free_R_hand','free_L_hand']
-        labels_dict = ['targetobject', 'hand']
-        id = [i for i in range(1, len(labels_dict) + 1)]
-        for lb in target_dict['annotation']['object']:
-            if lb['name']=='hand':
-                labels.append(2)
-            else:labels.append(1)
 
-            box = [None]*4
-            xmin = int(lb['bndbox']['xmin'])
-            ymin = int(lb['bndbox']['ymin'])
-            xmax = int(lb['bndbox']['xmax'])
-            ymax = int(lb['bndbox']['ymax'])
-            box[0]=xmin
-            box[1]=ymin
-            box[2]=(xmax if xmax-xmin>0 else xmin+1)
-            box[3]=(ymax if ymax-ymin>0 else ymin+1)
-            boxes.append(box)
+        boxes, labels=re_labeling(target_dict)
+
         image_id = torch.tensor([index])
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
@@ -134,6 +136,7 @@ class VOCDetection(_VOCBase):
         target["image_id"] = image_id
         target["area"] = area
         target["iscrowd"] = iscrowd
+        target["dict"]=target_dict
         if self.transforms is not None:
             img, target = self.transforms(img, target)
         return img, target
@@ -186,4 +189,3 @@ def dataloader(batch_size,data_path):
     trainval_loader = DataLoader(trainval_dataset, batch_size=batch_size,
                             shuffle=False, num_workers=4,collate_fn=utils.collate_fn)
     return train_loader,trainval_loader ,val_loader
-
