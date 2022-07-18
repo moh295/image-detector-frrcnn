@@ -1,21 +1,27 @@
+
+#ssh machines
 D22rFbRcj61648572524
-local
-ssh guillermo@192.168.178.143
+puplic ip
+ssh guillermo@45.158.142.229
 EYA61yxxn
 
 4hIc24bZXK1644913824
-ssh guillermo@45.158.142.228
+local ip
+ssh guillermo@192.168.188.124
 Mb6TNx0hR8
 
 
 ZzTe4LcpaA1657108798
-ssh guillermo@192.168.178.137
+puplic ip
+ssh guillermo@45.158.142.230
 vdP93907qi
-
+# hand object dataset download
+wget http://fouheylab.eecs.umich.edu/~dandans/projects/100DOH/downloads/pascal_voc_format.zip
+#transfer files
 zip -r /media/workspace/hand_object_datasets/output.zip /media/workspace/hand_object_datasets/output
 scp -r guillermo@192.168.178.143:/media/workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth torch_trained_fasterrcnn_100p.pth
-scp -r guillermo@192.168.178.137:/media/workspace/hand_object_datasets/ho_full_dataset.zip ho_full_dataset.zip
-scp -r guillermo@192.168.178.137:/media/workspace/hand_object_datasets/output.mp4 output.mp4
+scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth  torch_trained_fasterrcnn_100p.pth
+scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/input.mp4 input.mp4
 
 
 screen -dRaA -S torch

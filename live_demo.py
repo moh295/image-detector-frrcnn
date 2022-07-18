@@ -19,9 +19,10 @@ if __name__ == '__main__':
     with open(file) as json_data_file:
         config = json.load(json_data_file)
     root = config["data root"]
-    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+    #checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+    checkpoint = root + 'retrain_fasterrcnn_80k_2c.pth'
     a = argparse.ArgumentParser()
-    a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=0)
+    a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=1)
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=1)
