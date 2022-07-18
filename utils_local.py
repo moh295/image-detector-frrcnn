@@ -67,7 +67,7 @@ def overlap(box1,box2):
         # area and dividing it by the sum of prediction + ground-truth
         # areas - the intersection area
         iou = intersection_area / float(box1_area + box2_area - intersection_area)
-    print('iou',iou)
+    print('iou',iou,box1,box2)
     return iou
 
 def re_labeling(target):
@@ -83,6 +83,7 @@ def re_labeling(target):
     objects_temp_inf = False
 
     num_of_ojb=0
+    print('filename',target['annotation']['filename'])
     for lb in target['annotation']['object']:
         num_of_ojb+= 1
         print('obj',num_of_ojb)
@@ -134,7 +135,7 @@ def re_labeling(target):
             box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
             box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
             boxes.append(box)
-            hands_temp_info.append([box, labels[-1], objects_temp_inf])
+            hands_temp_info.append([boxes[-1], labels[-1], objects_temp_inf])
 
         # object annotations
         elif lb['name'] == 'targetobject':
@@ -150,9 +151,12 @@ def re_labeling(target):
             boxes.append(box)
             max_overlap = 0
             max_overalp_at = 0
-            print(lb['contactright'],lb['contactleft'])
+            is_obj_contact_L= int(lb['contactleft'])==1
+            is_obj_contact_R= int(lb['contactright'])==1
+            is_obj_contact_LR= is_obj_contact_L and is_obj_contact_R
+            print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
             # in case object in contact with both hands label with one of the following : portable_LR , non-portable_LR ,person_LR
-            if lb['contactright'] == 1 and lb['contactleft'] == 1:
+            if is_obj_contact_LR:
                 for inx in range(len(hands_temp_info)):
                     h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
                     if objec_on_hand:
@@ -170,7 +174,7 @@ def re_labeling(target):
                     labels.append(labels_dict['non-portable_LR'])
 
             #objet on contact with right hand only
-            elif lb['contactright'] == 1:
+            elif is_obj_contact_R:
 
                 for inx in range(len(hands_temp_info)):
                     h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
@@ -186,7 +190,7 @@ def re_labeling(target):
 
 
             # objet on contact with left hand only
-            elif lb['contactleft'] == 1 :
+            elif is_obj_contact_L:
                 for inx in range(len(hands_temp_info)):
                     h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
                     # if hand label is L contact state

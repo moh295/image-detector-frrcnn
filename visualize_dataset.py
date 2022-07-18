@@ -213,7 +213,7 @@ if __name__ == '__main__':
             # print(len(target['dict']),len(target['boxes']))
             image=tensor_to_numpy_cv2(image)
             draw = np.copy(image)
-            print('target',target['dict'])
+            # print('target',target['dict'])
             for bbox ,cls in zip(target['boxes'],target['labels']):
                 bbox = np.array(bbox).astype(int)
                 # print('label',cls,labels_dict[cls-1])
