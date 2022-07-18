@@ -67,7 +67,7 @@ def overlap(box1,box2):
         # area and dividing it by the sum of prediction + ground-truth
         # areas - the intersection area
         iou = intersection_area / float(box1_area + box2_area - intersection_area)
-    print('iou',iou,box1,box2)
+    # print('iou',iou,box1,box2)
     return iou
 
 def re_labeling(target):
@@ -83,10 +83,10 @@ def re_labeling(target):
     objects_temp_inf = False
 
     num_of_ojb=0
-    print('filename',target['annotation']['filename'])
+    # print('filename',target['annotation']['filename'])
     for lb in target['annotation']['object']:
         num_of_ojb+= 1
-        print('obj',num_of_ojb)
+        # print('obj',num_of_ojb)
 
         # starting with hands annotations
         # extract some target object annotations from the hand annotations e.g (person, portable object
@@ -154,7 +154,7 @@ def re_labeling(target):
             is_obj_contact_L= int(lb['contactleft'])==1
             is_obj_contact_R= int(lb['contactright'])==1
             is_obj_contact_LR= is_obj_contact_L and is_obj_contact_R
-            print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
+            # print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
             # in case object in contact with both hands label with one of the following : portable_LR , non-portable_LR ,person_LR
             if is_obj_contact_LR:
                 for inx in range(len(hands_temp_info)):
@@ -201,7 +201,7 @@ def re_labeling(target):
                             max_overalp_at = inx
                 _, _, objec_on_hand = hands_temp_info[max_overalp_at]
                 labels.append(objec_on_hand)
-            print('max_overalp_at', max_overalp_at, hands_temp_info)
+            # print('max_overalp_at', max_overalp_at, hands_temp_info)
 
 
     return boxes, labels
