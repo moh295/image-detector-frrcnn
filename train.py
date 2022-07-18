@@ -70,7 +70,7 @@ if __name__ == '__main__':
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     #loading/checking data....
 
-    print('batch size',args.batch)
+    print('batch size',args.batch,'training for ',args.epoch,'epoch')
     train_loader, trainval_loader, val_loader= dataloader(args.batch,args.dataset)
     #trainging ....
 
