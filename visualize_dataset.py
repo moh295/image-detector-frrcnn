@@ -17,8 +17,7 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 # labels_dict = ['targetobject', 'hand']
 
 # no contact 0 self=1, other person =2 portable object=3 , non portable =4
-#new labeling Hand_free_R =1 ,Hand_free_L=2,Hand_cont_R=3,Hand_cont_L=4  ,person_=5 ,person_L=6 ,person_LR=7,portable_R =8 ,portable_L=9, portable_LR=10
-# labels_dict = ['Hand_free_R','Hand_free_L','Hand_cont_R','Hand_cont_L' ,'person_R','person_L' ,'person_LR','portable_R' ,'portable_L', 'portable_LR']
+
 labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
              'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
              'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
