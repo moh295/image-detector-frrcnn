@@ -20,10 +20,8 @@ from torch.utils.data import DataLoader
 
 import torchvision.transforms as transforms
 import transforms as T
-import utils
-import  json
-import argparse
-from utils_local import tensor_to_numpy_cv2 , re_labeling
+from trainner.utils import collate_fn
+from utils import tensor_to_numpy_cv2 , re_labeling
 import cv2
 import numpy as np
 
@@ -179,13 +177,13 @@ def dataloader(batch_size,data_path):
     train_subset=torch.utils.data.Subset(train_dataset,train_subset)
 
     train_loader = DataLoader(train_subset, batch_size=batch_size,
-                            shuffle=True, num_workers=4,collate_fn=utils.collate_fn)
+                            shuffle=True, num_workers=4,collate_fn=collate_fn)
     val_dataset =VOCDetection(root=data_path, image_set='val',transforms=get_transform(train=True))
     val_loader = DataLoader(val_dataset, batch_size=batch_size,
-                            shuffle=False, num_workers=4,collate_fn=utils.collate_fn)
+                            shuffle=False, num_workers=4,collate_fn=collate_fn)
     print('validation set length', len(val_dataset))
     trainval_dataset = VOCDetection(root=data_path, image_set='trainval', transforms=get_transform(train=True))
 
     trainval_loader = DataLoader(trainval_dataset, batch_size=batch_size,
-                            shuffle=False, num_workers=4,collate_fn=utils.collate_fn)
+                            shuffle=False, num_workers=4,collate_fn=collate_fn)
     return train_loader,trainval_loader ,val_loader

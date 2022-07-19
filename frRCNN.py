@@ -4,7 +4,7 @@ from timeit import default_timer as timer
 from datetime import timedelta
 import cv2
 import numpy as np
-from utils_local import image_resize
+from utils import image_resize
 class FrRCNN:
     def __init__(self,checkpoint='data/torch_trained_fasterrcnn_100p.pth'):
         self.labels_dict = ['targetobject', 'hand']

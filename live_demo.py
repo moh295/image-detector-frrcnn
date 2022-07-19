@@ -1,15 +1,7 @@
-import torch
-# from torchvision import models
-from timeit import default_timer as timer
-from datetime import timedelta
-import random
-from bbox import BBox
 import argparse
 from torchvision import transforms
-import glob
 import cv2
-import numpy as np
-from utils_local import image_resize
+from utils import image_resize
 import json
 from frRCNN import FrRCNN
 

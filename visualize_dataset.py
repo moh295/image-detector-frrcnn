@@ -1,7 +1,7 @@
 import transforms as T
 import  json
 import argparse
-from utils_local import tensor_to_numpy_cv2 , re_labeling
+from utils import tensor_to_numpy_cv2 , re_labeling
 import cv2
 import numpy as np
 from dataloader import dataloader

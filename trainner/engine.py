@@ -4,10 +4,10 @@ import time
 
 import torch
 import torchvision.models.detection.mask_rcnn
-import utils
-from coco_eval import CocoEvaluator
-from coco_utils import get_coco_api_from_dataset
-from general_utils import save_validation_results
+import trainner.utils as utils
+from trainner.coco_eval import CocoEvaluator
+from trainner.coco_utils import get_coco_api_from_dataset
+from trainner.general_utils import save_validation_results
 
 def train_one_epoch(
     model, 

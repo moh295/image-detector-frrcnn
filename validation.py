@@ -1,7 +1,7 @@
 
 import argparse
 import json
-from utils_local import tensor_to_numpy_cv2
+from utils import tensor_to_numpy_cv2
 from dataloader import dataloader
 from frRCNN import FrRCNN
 

@@ -1,324 +1,208 @@
-from collections import defaultdict, deque
-import datetime
-import pickle
-import time
+import cv2
+import numpy as np
 
-import torch
-import torch.distributed as dist
+import torchvision.transforms as T
 
-import errno
-import os
+def torch_model_info(model,optimizer):
+    # Print model's state_dict
+    print("Model's state_dict:")
+    for param_tensor in model.state_dict():
+        print(param_tensor, "\t", model.state_dict()[param_tensor].size())
 
+    # Print optimizer's state_dict
+    print("Optimizer's state_dict:")
+    for var_name in optimizer.state_dict():
+        print(var_name, "\t", optimizer.state_dict()[var_name])
 
-class SmoothedValue(object):
-    """Track a series of values and provide access to smoothed values over a
-    window or the global series average.
-    """
+def inverse_normalize(tensor, mean, std):
+    for t, m, s in zip(tensor, mean, std):
+        t.mul_(s).add_(m)
+    return tensor
 
-    def __init__(self, window_size=20, fmt=None):
-        if fmt is None:
-            fmt = "{median:.4f} ({global_avg:.4f})"
-        self.deque = deque(maxlen=window_size)
-        self.total = 0.0
-        self.count = 0
-        self.fmt = fmt
+def tensor_to_PIL(tensor,normlized=True,mean=(0.5,0.5,0.5),std=(0.5,0.5,0.5)):
+    if normlized:
+        tensor=inverse_normalize(tensor,mean,std)
 
-    def update(self, value, n=1):
-        self.deque.append(value)
-        self.count += n
-        self.total += value * n
+    transform = T.ToPILImage()
+    return transform(tensor)
+def nurmolize_numpy(img, target_type_min, target_type_max, target_type):
+    imin = img.min()
+    imax = img.max()
+    a = (target_type_max - target_type_min) / (imax - imin)
+    b = target_type_max - a * imax
+    new_img = (a * img + b).astype(target_type)
+    return new_img
+def tensor_to_numpy_cv2(teosor):
+    numpy=teosor.permute(1, 2, 0).numpy()
+    numpy=nurmolize_numpy(numpy, 0, 255, np.uint8)
+    numpy=cv2.cvtColor(numpy, cv2.COLOR_BGR2RGB)
+    return numpy
 
-    def synchronize_between_processes(self):
-        """
-        Warning: does not synchronize the deque!
-        """
-        if not is_dist_avail_and_initialized():
-            return
-        t = torch.tensor([self.count, self.total], dtype=torch.float64, device='cuda')
-        dist.barrier()
-        dist.all_reduce(t)
-        t = t.tolist()
-        self.count = int(t[0])
-        self.total = t[1]
+def image_resize(img,scale):
+    width = int(img.shape[1] * scale )
+    height = int(img.shape[0] * scale)
+    dim = (width, height)
+    return  cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
 
-    @property
-    def median(self):
-        d = torch.tensor(list(self.deque))
-        return d.median().item()
+def overlap(box1,box2):
+    x1_a,y1_a,x2_a,y2_a=box1
+    x1_b,y1_b,x2_b,y2_b=box2
+    iou = 0.0
+    # determine the coordinates of the intersection rectangle
+    x_left = max(x1_b, x1_a)
+    y_top = max(y1_b, y1_a)
+    x_right = min(x2_b, x2_a)
+    y_bottom = min(y2_b, y2_a)
 
-    @property
-    def avg(self):
-        d = torch.tensor(list(self.deque), dtype=torch.float32)
-        return d.mean().item()
+    if x_right >= x_left and y_bottom >= y_top:
+        # The intersection of two axis-aligned bounding boxes is always an
+        # axis-aligned bounding box
+        intersection_area = (x_right - x_left) * (y_bottom - y_top)
 
-    @property
-    def global_avg(self):
-        return self.total / self.count
+        # compute the area of both AABBs
+        box1_area = (x2_b - x1_b) * (y2_b - y1_b)
+        box2_area = (x2_a - x1_a) * (y2_a - y1_a)
 
-    @property
-    def max(self):
-        return max(self.deque)
+        # compute the intersection over union by taking the intersection
+        # area and dividing it by the sum of prediction + ground-truth
+        # areas - the intersection area
+        iou = intersection_area / float(box1_area + box2_area - intersection_area)
+    # print('iou',iou,box1,box2)
+    return iou
 
-    @property
-    def value(self):
-        return self.deque[-1]
+def re_labeling(target):
+    # no contact 0 self=1, other person =2 portable object=3 , non portable =4
 
-    def __str__(self):
-        return self.fmt.format(
-            median=self.median,
-            avg=self.avg,
-            global_avg=self.global_avg,
-            max=self.max,
-            value=self.value)
+    labels_dict = {'Hand_free_R': 1, 'Hand_free_L': 2, 'Hand_cont_R': 3, 'Hand_cont_L': 4,
+                   'person_R': 5, 'person_L': 6, 'person_LR': 7, 'portable_R': 8,
+                   'portable_L': 9, 'portable_LR': 10, 'non-portable_R': 11, 'non-portable_L': 12,
+                   'non-portable_LR': 13}
+    boxes = []
+    labels = []
+    hands_temp_info = []
+    objects_temp_inf = False
 
+    num_of_ojb=0
+    # print('filename',target['annotation']['filename'])
+    for lb in target['annotation']['object']:
+        num_of_ojb+= 1
+        # print('obj',num_of_ojb)
 
-def all_gather(data):
-    """
-    Run all_gather on arbitrary picklable data (not necessarily tensors)
-    Args:
-        data: any picklable object
-    Returns:
-        list[data]: list of data gathered from each rank
-    """
-    world_size = get_world_size()
-    if world_size == 1:
-        return [data]
+        # starting with hands annotations
+        # extract some target object annotations from the hand annotations e.g (person, portable object
+        if lb['name'] == 'hand':
+            contact_state = int(lb['contactstate'])
+            side = int(lb['handside'])
 
-    # serialized to a Tensor
-    buffer = pickle.dumps(data)
-    storage = torch.ByteStorage.from_buffer(buffer)
-    tensor = torch.ByteTensor(storage).to("cuda")
-
-    # obtain Tensor size of each rank
-    local_size = torch.tensor([tensor.numel()], device="cuda")
-    size_list = [torch.tensor([0], device="cuda") for _ in range(world_size)]
-    dist.all_gather(size_list, local_size)
-    size_list = [int(size.item()) for size in size_list]
-    max_size = max(size_list)
-
-    # receiving Tensor from all ranks
-    # we pad the tensor because torch all_gather does not support
-    # gathering tensors of different shapes
-    tensor_list = []
-    for _ in size_list:
-        tensor_list.append(torch.empty((max_size,), dtype=torch.uint8, device="cuda"))
-    if local_size != max_size:
-        padding = torch.empty(size=(max_size - local_size,), dtype=torch.uint8, device="cuda")
-        tensor = torch.cat((tensor, padding), dim=0)
-    dist.all_gather(tensor_list, tensor)
-
-    data_list = []
-    for size, tensor in zip(size_list, tensor_list):
-        buffer = tensor.cpu().numpy().tobytes()[:size]
-        data_list.append(pickle.loads(buffer))
-
-    return data_list
-
-
-def reduce_dict(input_dict, average=True):
-    """
-    Args:
-        input_dict (dict): all the values will be reduced
-        average (bool): whether to do average or sum
-    Reduce the values in the dictionary from all processes so that all processes
-    have the averaged results. Returns a dict with the same fields as
-    input_dict, after reduction.
-    """
-    world_size = get_world_size()
-    if world_size < 2:
-        return input_dict
-    with torch.no_grad():
-        names = []
-        values = []
-        # sort the keys so that they are consistent across processes
-        for k in sorted(input_dict.keys()):
-            names.append(k)
-            values.append(input_dict[k])
-        values = torch.stack(values, dim=0)
-        dist.all_reduce(values)
-        if average:
-            values /= world_size
-        reduced_dict = {k: v for k, v in zip(names, values)}
-    return reduced_dict
-
-
-class MetricLogger(object):
-    def __init__(self, delimiter="\t"):
-        self.meters = defaultdict(SmoothedValue)
-        self.delimiter = delimiter
-
-    def update(self, **kwargs):
-        for k, v in kwargs.items():
-            if isinstance(v, torch.Tensor):
-                v = v.item()
-            assert isinstance(v, (float, int))
-            self.meters[k].update(v)
-
-    def __getattr__(self, attr):
-        if attr in self.meters:
-            return self.meters[attr]
-        if attr in self.__dict__:
-            return self.__dict__[attr]
-        raise AttributeError("'{}' object has no attribute '{}'".format(
-            type(self).__name__, attr))
-
-    def __str__(self):
-        loss_str = []
-        for name, meter in self.meters.items():
-            loss_str.append(
-                "{}: {}".format(name, str(meter))
-            )
-        return self.delimiter.join(loss_str)
-
-    def synchronize_between_processes(self):
-        for meter in self.meters.values():
-            meter.synchronize_between_processes()
-
-    def add_meter(self, name, meter):
-        self.meters[name] = meter
-
-    def log_every(self, iterable, print_freq, header=None):
-        i = 0
-        if not header:
-            header = ''
-        start_time = time.time()
-        end = time.time()
-        iter_time = SmoothedValue(fmt='{avg:.4f}')
-        data_time = SmoothedValue(fmt='{avg:.4f}')
-        space_fmt = ':' + str(len(str(len(iterable)))) + 'd'
-        if torch.cuda.is_available():
-            log_msg = self.delimiter.join([
-                header,
-                '[{0' + space_fmt + '}/{1}]',
-                'eta: {eta}',
-                '{meters}',
-                'time: {time}',
-                'data: {data}',
-                'max mem: {memory:.0f}'
-            ])
-        else:
-            log_msg = self.delimiter.join([
-                header,
-                '[{0' + space_fmt + '}/{1}]',
-                'eta: {eta}',
-                '{meters}',
-                'time: {time}',
-                'data: {data}'
-            ])
-        MB = 1024.0 * 1024.0
-        for obj in iterable:
-            data_time.update(time.time() - end)
-            yield obj
-            iter_time.update(time.time() - end)
-            if i % print_freq == 0 or i == len(iterable) - 1:
-                eta_seconds = iter_time.global_avg * (len(iterable) - i)
-                eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
-                if torch.cuda.is_available():
-                    print(log_msg.format(
-                        i, len(iterable), eta=eta_string,
-                        meters=str(self),
-                        time=str(iter_time), data=str(data_time),
-                        memory=torch.cuda.max_memory_allocated() / MB))
+            if side == 0:
+                # free right hand
+                if contact_state == 0:
+                    labels.append(labels_dict['Hand_free_R'])
+                # contact to person right hand
+                elif contact_state == 1 or contact_state == 2:
+                    labels.append(labels_dict['Hand_cont_R'])
+                    objects_temp_inf = labels_dict['person_R']
+                # right hand contact with portable object
+                elif contact_state == 3:
+                    labels.append(labels_dict['Hand_cont_R'])
+                    objects_temp_inf = labels_dict['portable_R']
                 else:
-                    print(log_msg.format(
-                        i, len(iterable), eta=eta_string,
-                        meters=str(self),
-                        time=str(iter_time), data=str(data_time)))
-            i += 1
-            end = time.time()
-        total_time = time.time() - start_time
-        total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-        print('{} Total time: {} ({:.4f} s / it)'.format(
-            header, total_time_str, total_time / len(iterable)))
+                    labels.append(labels_dict['Hand_cont_R'])
+                    objects_temp_inf = labels_dict['non-portable_R']
+            else:
+                # free left hand
+                if contact_state == 0:
+                    labels.append(labels_dict['Hand_free_L'])
+                # contact to person left hand
+                elif contact_state == 1 or contact_state == 2:
+                    labels.append(labels_dict['Hand_cont_L'])
+                    objects_temp_inf = labels_dict['person_L']
+                # left hand contact with portable object
+                elif contact_state == 3:
+                    labels.append(labels_dict['Hand_cont_L'])
+                    objects_temp_inf = labels_dict['portable_L']
+                else:
+                    labels.append(labels_dict['Hand_cont_L'])
+                    objects_temp_inf = labels_dict['non-portable_L']
+
+            box = [None] * 4
+            xmin = int(lb['bndbox']['xmin'])
+            ymin = int(lb['bndbox']['ymin'])
+            xmax = int(lb['bndbox']['xmax'])
+            ymax = int(lb['bndbox']['ymax'])
+            box[0] = xmin
+            box[1] = ymin
+            box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
+            box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
+            boxes.append(box)
+            hands_temp_info.append([box, labels[-1], objects_temp_inf])
+
+        # object annotations
+        elif lb['name'] == 'targetobject':
+            box = [None] * 4
+            xmin = int(lb['bndbox']['xmin'])
+            ymin = int(lb['bndbox']['ymin'])
+            xmax = int(lb['bndbox']['xmax'])
+            ymax = int(lb['bndbox']['ymax'])
+            box[0] = xmin
+            box[1] = ymin
+            box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
+            box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
+            boxes.append(box)
+            max_overlap = 0
+            max_overalp_at = 0
+            is_obj_contact_L= int(lb['contactleft'])==1
+            is_obj_contact_R= int(lb['contactright'])==1
+            is_obj_contact_LR= is_obj_contact_L and is_obj_contact_R
+            # print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
+            # in case object in contact with both hands label with one of the following : portable_LR , non-portable_LR ,person_LR
+            if is_obj_contact_LR:
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
+                    if objec_on_hand:
+                        bbx_overlap = (overlap(h_bbx, box))
+                        if bbx_overlap > 0 and bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+
+                _, _, objec_on_hand = hands_temp_info[max_overalp_at]
+                if objec_on_hand == labels_dict['person_R'] or objec_on_hand == labels_dict['person_L']:
+                    labels.append(labels_dict['person_LR'])
+                elif objec_on_hand == labels_dict['portable_R'] or objec_on_hand == labels_dict['portable_L']:
+                    labels.append(labels_dict['portable_LR'])
+                else:
+                    labels.append(labels_dict['non-portable_LR'])
+
+            #objet on contact with right hand only
+            elif is_obj_contact_R:
+
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
+                    # if hand label is R contact state
+                    if objec_on_hand and h_label==labels_dict['Hand_cont_R']:
+                        bbx_overlap = (overlap(h_bbx, box))
+                        if bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+                _, _, objec_on_hand = hands_temp_info[max_overalp_at]
+
+                labels.append(objec_on_hand)
 
 
-def collate_fn(batch):
-    return tuple(zip(*batch))
+            # objet on contact with left hand only
+            elif is_obj_contact_L:
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, h_label, objec_on_hand = hands_temp_info[inx]
+                    # if hand label is L contact state
+                    if objec_on_hand and h_label == h_label==labels_dict['Hand_cont_L']:
+                        bbx_overlap = overlap(h_bbx, box)
+                        if  bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+                _, _, objec_on_hand = hands_temp_info[max_overalp_at]
+                labels.append(objec_on_hand)
+            # print('max_overalp_at', max_overalp_at, hands_temp_info)
 
 
-def warmup_lr_scheduler(optimizer, warmup_iters, warmup_factor):
+    return boxes, labels
 
-    def f(x):
-        if x >= warmup_iters:
-            return 1
-        alpha = float(x) / warmup_iters
-        return warmup_factor * (1 - alpha) + alpha
-
-    return torch.optim.lr_scheduler.LambdaLR(optimizer, f)
-
-
-def mkdir(path):
-    try:
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-
-
-def setup_for_distributed(is_master):
-    """
-    This function disables printing when not in master process
-    """
-    import builtins as __builtin__
-    builtin_print = __builtin__.print
-
-    def print(*args, **kwargs):
-        force = kwargs.pop('force', False)
-        if is_master or force:
-            builtin_print(*args, **kwargs)
-
-    __builtin__.print = print
-
-
-def is_dist_avail_and_initialized():
-    if not dist.is_available():
-        return False
-    if not dist.is_initialized():
-        return False
-    return True
-
-
-def get_world_size():
-    if not is_dist_avail_and_initialized():
-        return 1
-    return dist.get_world_size()
-
-
-def get_rank():
-    if not is_dist_avail_and_initialized():
-        return 0
-    return dist.get_rank()
-
-
-def is_main_process():
-    return get_rank() == 0
-
-
-def save_on_master(*args, **kwargs):
-    if is_main_process():
-        torch.save(*args, **kwargs)
-
-
-def init_distributed_mode(args):
-    if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
-        args.rank = int(os.environ["RANK"])
-        args.world_size = int(os.environ['WORLD_SIZE'])
-        args.gpu = int(os.environ['LOCAL_RANK'])
-    elif 'SLURM_PROCID' in os.environ:
-        args.rank = int(os.environ['SLURM_PROCID'])
-        args.gpu = args.rank % torch.cuda.device_count()
-    else:
-        print('Not using distributed mode')
-        args.distributed = False
-        return
-
-    args.distributed = True
-
-    torch.cuda.set_device(args.gpu)
-    args.dist_backend = 'nccl'
-    print('| distributed init (rank {}): {}'.format(
-        args.rank, args.dist_url), flush=True)
-    torch.distributed.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                         world_size=args.world_size, rank=args.rank)
-    torch.distributed.barrier()
-    setup_for_distributed(args.rank == 0)

@@ -7,7 +7,7 @@ from collections import defaultdict, deque
 import torch
 import torch.distributed as dist
 
-from logger import log
+from trainner.logger import log
 
 
 class SmoothedValue:

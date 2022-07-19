@@ -2,7 +2,7 @@ import argparse
 from torchvision import transforms
 import glob
 import cv2
-from utils_local import image_resize
+from utils import image_resize
 import json
 from frRCNN import FrRCNN
 if __name__ == '__main__':
