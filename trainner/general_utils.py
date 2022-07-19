@@ -312,15 +312,15 @@ def set_training_dir(dir_name=None):
     and creates a new one in `outputs/training/`.
     And returns the directory path.
     """
-    if not os.path.exists('outputs/training'):
-        os.makedirs('outputs/training')
+    if not os.path.exists('data/outputs/training'):
+        os.makedirs('data/outputs/training')
     if dir_name:
-        new_dir_name = f"outputs/training/{dir_name}"
+        new_dir_name = f"data/outputs/training/{dir_name}"
         os.makedirs(new_dir_name, exist_ok=True)
         return new_dir_name
     else:
-        num_train_dirs_present = len(os.listdir('outputs/training/'))
+        num_train_dirs_present = len(os.listdir('data/outputs/training/'))
         next_dir_num = num_train_dirs_present + 1
-        new_dir_name = f"outputs/training/res_{next_dir_num}"
+        new_dir_name = f"data/outputs/training/res_{next_dir_num}"
         os.makedirs(new_dir_name, exist_ok=True)
         return new_dir_name
