@@ -24,6 +24,8 @@ if __name__ == '__main__':
     model=FrRCNN(checkpoint)
     #open cam
     cap = cv2.VideoCapture(args.cam)
+    fps = int(cap.get(5))
+    print("fps:", fps)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
     # cap.set(cv2.CAP_PROP_FPS, 30)
@@ -38,9 +40,8 @@ if __name__ == '__main__':
         # Capture frame-by-frame
 
         ret, frame = cap.read()
-        print('frame size',frame.shape)
+        # print('frame size',frame.shape)
         # # Display the resulting frame
-        # cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         image=image_resize(frame,args.input_scale)
