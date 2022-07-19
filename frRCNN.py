@@ -24,7 +24,7 @@ class FrRCNN:
                 save_dir,
                 tensors, images, count=1,
                 save=False, show=False,
-                show_vid=False, save_vid=False):
+                show_vid=False, save_vid=False,output_scale=1):
         # apply model on images and save the result
 
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -68,7 +68,7 @@ class FrRCNN:
 
                 color_intensity = int(200 - 200 * prob)
                 Free_hand=cls <3
-                Contact_hand=3<cls <5
+                Contact_hand=2<cls <5
                 color =  (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
                 hand=Free_hand or Contact_hand
                 if hand and prob > hand_prob_thresh:
@@ -80,17 +80,18 @@ class FrRCNN:
                     cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2]+20, font, 1, color, 2, cv2.LINE_AA)
 
             if save:
-                cv2.imwrite(path_to_output_image + str(cnt) + '.png', draw)
+
+                cv2.imwrite(path_to_output_image + str(cnt) + '.png', image_resize(draw,output_scale))
                 print(f'Output image is saved to {path_to_output_image}{cnt}.png')
             cnt += 1
             if show:
-                cv2.imshow('frame', draw)
+                cv2.imshow('frame', image_resize(draw,output_scale))
                 cv2.waitKey(0)
             if show_vid:
-                cv2.imshow('output image', image_resize(draw, 2))
+                cv2.imshow('output image', image_resize(draw,output_scale))
                 cv2.waitKey(1)
             if save_vid:
-                self.video.write(draw)
+                self.video.write(image_resize(draw,output_scale))
                 print('image added to video ', draw.shape)
 
         end = timer()

@@ -39,6 +39,7 @@ def tensor_to_numpy_cv2(teosor):
     return numpy
 
 def image_resize(img,scale):
+    if scale == 1: return img
     width = int(img.shape[1] * scale )
     height = int(img.shape[0] * scale)
     dim = (width, height)

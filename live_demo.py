@@ -36,7 +36,7 @@ if __name__ == '__main__':
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         ret, frame = cap.read()
         # # Display the resulting frame
-        cv2.imshow('frame', frame)
+        # cv2.imshow('frame', frame)
         if cv2.waitKey(20) & 0xFF == ord('q'):
             break
         image=image_resize(frame,args.scale)
