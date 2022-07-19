@@ -112,8 +112,8 @@ class FrRCNN:
                   'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220), 'red 1': (255, 82, 82),
                   'red 2': (255, 82, 82), 'red 3': (255, 82, 82)}
 
-        obj_prob_thresh = 0.1
-        hand_prob_thresh = 0.30
+        obj_prob_thresh = 0.15
+        hand_prob_thresh = 0.35
         cnt = count
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -145,16 +145,15 @@ class FrRCNN:
                 color_intensity = int(200 - 200 * prob)
                 L_hand=cls == 2 or cls == 4
                 R_hand=cls == 1 or cls == 3
-                print(cls,category)
                 color =  (225, color_intensity, color_intensity) if R_hand else (color_intensity, 255, color_intensity)
                 hand=L_hand or R_hand
                 if hand and prob > hand_prob_thresh:
                     cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
-                    cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+                    cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2]+20, font, 1, color, 2, cv2.LINE_AA)
                 elif not hand and prob > obj_prob_thresh:
                     color = (color_intensity, color_intensity, 255)
                     cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
-                    cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+                    cv2.putText(draw, f'{category:s} {prob:.3f}', bbox[:2]+20, font, 1, color, 2, cv2.LINE_AA)
 
             if save:
                 cv2.imwrite(path_to_output_image + str(cnt) + '.png', draw)
