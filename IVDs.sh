@@ -21,7 +21,7 @@ wget http://fouheylab.eecs.umich.edu/~dandans/projects/100DOH/downloads/pascal_v
 zip -r /media/workspace/hand_object_datasets/output.zip /media/workspace/hand_object_datasets/output
 scp -r guillermo@192.168.178.143:/media/workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth torch_trained_fasterrcnn_100p.pth
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/torch_trained_fasterrcnn_100p.pth  torch_trained_fasterrcnn_100p.pth
-scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/input.mp4 input.mp4
+scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fasterrcnn_80k.pth retrain_fasterrcnn_80k.pth
 
 
 screen -dRaA -S torch

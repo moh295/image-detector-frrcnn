@@ -15,7 +15,7 @@ if __name__ == '__main__':
     with open(file) as json_data_file:
         config = json.load(json_data_file)
     root = config["data root"]
-    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+    checkpoint=config["checkpoint"]
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", help="the weight dirctory for the trained model",default=checkpoint)
     args = a.parse_args()

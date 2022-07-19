@@ -37,7 +37,7 @@ if __name__ == '__main__':
     with open(file) as json_data_file:
         config = json.load(json_data_file)
     root = config["data root"]
-    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
+    checkpoint=config["checkpoint"]
     a = argparse.ArgumentParser()
     a.add_argument("--dataset", help="PSCAL VOC2007 format folder",
                    default=root + 'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
