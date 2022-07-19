@@ -71,7 +71,7 @@ def overlap(box1,box2):
     # print('iou',iou,box1,box2)
     return iou
 
-def re_labeling(target):
+def re_labeling_old(target):
     # no contact 0 self=1, other person =2 portable object=3 , non portable =4
 
     labels_dict = {'Hand_free_R': 1, 'Hand_free_L': 2, 'Hand_cont_R': 3, 'Hand_cont_L': 4,
@@ -204,6 +204,120 @@ def re_labeling(target):
                 labels.append(objec_on_hand)
             # print('max_overalp_at', max_overalp_at, hands_temp_info)
 
+
+    return boxes, labels
+
+def re_labeling(target):
+    # no contact 0 self=1, other person =2 portable object=3 , non portable =4
+    labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
+    boxes = []
+    labels = []
+    hands_temp_info = []
+    objects_temp_inf = False
+
+    num_of_ojb = 0
+    # print('filename',target['annotation']['filename'])
+    for lb in target['annotation']['object']:
+
+        num_of_ojb += 1
+        # print('obj',num_of_ojb)
+
+        # starting with hands annotations
+        # extract some target object annotations from the hand annotations e.g (person, portable object
+        if lb['name'] == 'hand':
+            contact_state = int(lb['contactstate'])
+            side = int(lb['handside'])
+
+            # free hand
+            if contact_state == 0:
+                labels.append(labels_dict['Hand_free'])
+            # contact to person  hand
+            elif contact_state == 1 or contact_state == 2:
+                labels.append(labels_dict['Hand_cont'])
+                objects_temp_inf = labels_dict['person']
+            #  hand contact with  object
+
+            else:
+                labels.append(labels_dict['Hand_cont'])
+                objects_temp_inf = labels_dict['object']
+
+
+
+            box = [None] * 4
+            xmin = int(lb['bndbox']['xmin'])
+            ymin = int(lb['bndbox']['ymin'])
+            xmax = int(lb['bndbox']['xmax'])
+            ymax = int(lb['bndbox']['ymax'])
+            box[0] = xmin
+            box[1] = ymin
+            box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
+            box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
+            boxes.append(box)
+            hands_temp_info.append([box,side,objects_temp_inf])
+
+        # object annotations
+        elif lb['name'] == 'targetobject':
+            box = [None] * 4
+            xmin = int(lb['bndbox']['xmin'])
+            ymin = int(lb['bndbox']['ymin'])
+            xmax = int(lb['bndbox']['xmax'])
+            ymax = int(lb['bndbox']['ymax'])
+            box[0] = xmin
+            box[1] = ymin
+            box[2] = (xmax if xmax - xmin > 0 else xmin + 1)
+            box[3] = (ymax if ymax - ymin > 0 else ymin + 1)
+            boxes.append(box)
+            max_overlap = 0
+            max_overalp_at = 0
+            is_obj_contact_L = int(lb['contactleft']) == 1
+            is_obj_contact_R = int(lb['contactright']) == 1
+            is_obj_contact_LR = is_obj_contact_L and is_obj_contact_R
+            # print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
+            # in case object in contact with both hands label with one of the following : portable_LR , non-portable_LR ,person_LR
+            if is_obj_contact_LR:
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, side, objec_on_hand = hands_temp_info[inx]
+                    if objec_on_hand:
+                        bbx_overlap = (overlap(h_bbx, box))
+                        if bbx_overlap > 0 and bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+
+                _, _ ,objec_on_hand = hands_temp_info[max_overalp_at]
+                if objec_on_hand == labels_dict['person']:
+                    labels.append(labels_dict['person'])
+                else:
+                    labels.append(labels_dict['object'])
+
+            # objet on contact with right hand only
+            elif is_obj_contact_R:
+
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, side, objec_on_hand= hands_temp_info[inx]
+                    # if hand label is R contact state
+                    if objec_on_hand and side==0:
+                        bbx_overlap = (overlap(h_bbx, box))
+                        if bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+                _, _, objec_on_hand = hands_temp_info[max_overalp_at]
+
+                labels.append(objec_on_hand)
+
+
+            # objet on contact with left hand only
+            elif is_obj_contact_L:
+                for inx in range(len(hands_temp_info)):
+                    h_bbx, side, objec_on_hand = hands_temp_info[inx]
+                    # if hand label is L contact state
+                    if objec_on_hand and side==1:
+                        bbx_overlap = overlap(h_bbx, box)
+                        if bbx_overlap > max_overlap:
+                            max_overlap = bbx_overlap
+                            max_overalp_at = inx
+                _, _,objec_on_hand = hands_temp_info[max_overalp_at]
+                labels.append(objec_on_hand)
+            # print('max_overalp_at', max_overalp_at, hands_temp_info)
 
     return boxes, labels
 

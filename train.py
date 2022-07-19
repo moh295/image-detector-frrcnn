@@ -42,7 +42,7 @@ def parse_opt():
         config = json.load(json_data_file)
     root = config["data root"]
 
-    new_checkpoint = root + 'retrain_fasterrcnn_80k.pth'
+    new_checkpoint = root + 'retrain_fasterrcnn_80k_2.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str, help="the weight dirctory for the trained model",
                    default=False)

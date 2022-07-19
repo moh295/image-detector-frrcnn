@@ -18,9 +18,11 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 
 # no contact 0 self=1, other person =2 portable object=3 , non portable =4
 
-labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
-             'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
-             'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
+# labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
+#              'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
+#              'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
+
+labels_dict={'Hand_free':1,'Hand_cont':2,'object':3,'person':4}
 
 def get_transform(train):
     transforms = []
@@ -61,7 +63,7 @@ if __name__ == '__main__':
                 # print('label',cls,labels_dict[cls-1])
 
                 #targetoject
-                if cls==labels_dict['Hand_free_L']:
+                if cls==labels_dict['Hand_free']:
                     color = (0, 0, 225)
                     # cv2.putText(draw, f'{labels_dict[cls-1]:s} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
                 else :
