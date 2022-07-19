@@ -220,7 +220,7 @@ def main(args):
         csv_log(OUT_DIR, stats, epoch)
 
 
-# if __name__ == '__main__':
-def start():
+if __name__ == '__main__':
+
     args = parse_opt()
     main(args)
