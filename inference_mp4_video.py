@@ -30,18 +30,11 @@ if __name__ == '__main__':
     count = 1
     success = True
     init_vid=True
+    vidcap = cv2.VideoCapture(args.video)
     while success:
-        vidcap = cv2.VideoCapture(args.video)
         success, image = vidcap.read()
         print('Read a new frame: ', success)
-        #for first frame only
-        if init_vid:
-            init_vid = False
-            height, width, layers = image.shape
-            fps = 30
-            model.create_video(width,height,fps,args.output)
-
-
+        if not success: break
         image=image_resize(image,args.scale)
         image_list.append(image)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -49,6 +42,16 @@ if __name__ == '__main__':
         tensor=transform(tensor)
         tensor_list.append(tensor)
         image_batch.append(image)
+
+        # for first frame only
+        if init_vid:
+            init_vid = False
+            height, width, layers = image.shape
+            fps = 30
+            print('initiat vid size', width, height, fps, args.output)
+            model.create_video(width, height, fps, args.output)
+
+
         if len(tensor_list)==args.batch:
             frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,images=image_batch)
 

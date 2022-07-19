@@ -85,12 +85,19 @@ class FrRCNN:
                 cv2.waitKey(1)
             if save_vid:
                 self.video.write(draw)
+                print('image added to video ',draw.shape)
 
         end = timer()
         elapsed = timedelta(seconds=end - start)
-        print(f'full prediction process takes {elapsed}')
+        print(f'full prediction process takes {elapsed} [+ annotation ,saving..]')
 
     def create_video(self, width, height, fps, output):
-        self.video = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*'DIVX'), fps, (width, height))
+        # Define the codec and create VideoWriter object
+        print('initiating video ...')
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
+        self.video  = cv2.VideoWriter(output, fourcc, fps, (width, height))
+
+
     def realse_vid(self):
+        print('releasing video ..')
         self.video.release()
