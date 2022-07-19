@@ -31,6 +31,7 @@ eval $(ssh-agent);ssh-add /home/guillermo/.ssh/id_ed25519_new
 git remote add origin https://github.com/moh295/image-detector-frrcnn.git
 
 git pull; docker build . -t image-detector-frrcnn-base -f DockerfileBase
+docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data --shm-size 50G image-detector-frrcnn-base
 
 rm images.zip; zip -r images.zip output;aws s3 cp images.zip s3://systemimages;rm output/*.png
 
