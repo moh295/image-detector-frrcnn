@@ -68,7 +68,7 @@ class FrRCNN:
 
                 color_intensity = int(200 - 200 * prob)
                 Free_hand=cls <3
-                Contact_hand=2<cls <5
+                Contact_hand=3<cls <5
                 color =  (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
                 hand=Free_hand or Contact_hand
                 if hand and prob > hand_prob_thresh:

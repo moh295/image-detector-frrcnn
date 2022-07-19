@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
     checkpoint=config["checkpoint"]
     a = argparse.ArgumentParser()
-    a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=0)
+    a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=1)
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=1)
@@ -32,12 +32,11 @@ if __name__ == '__main__':
     while True:
 
         # Capture frame-by-frame
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         ret, frame = cap.read()
-        # Our operations on the frame come here
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         # # Display the resulting frame
         cv2.imshow('frame', frame)
-        # cv2.imshow('gray', gray)
         if cv2.waitKey(20) & 0xFF == ord('q'):
             break
         image=image_resize(frame,args.scale)
