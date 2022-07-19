@@ -61,9 +61,9 @@ class FrRCNN:
             detection_bboxes = detection_bboxes[kept_indices]
             detection_classes = detection_classes[kept_indices]
             detection_probs = detection_probs[kept_indices]
-            draw = np.copy(image)
+            draw = np.copy(image_resize(image,output_scale))
             for bbox, cls, prob in zip(detection_bboxes.tolist(), detection_classes.tolist(), detection_probs.tolist()):
-                bbox = np.array(bbox).astype(int)
+                bbox = np.array(bbox).astype(int)*output_scale
                 category = list(self.labels_dict.keys())[cls - 1]
 
                 color_intensity = int(200 - 200 * prob)
@@ -85,13 +85,13 @@ class FrRCNN:
                 print(f'Output image is saved to {path_to_output_image}{cnt}.png')
             cnt += 1
             if show:
-                cv2.imshow('frame', image_resize(draw,output_scale))
+                cv2.imshow('frame', draw)
                 cv2.waitKey(0)
             if show_vid:
-                cv2.imshow('output image', image_resize(draw,output_scale))
+                cv2.imshow('output image', draw)
                 cv2.waitKey(1)
             if save_vid:
-                self.video.write(image_resize(draw,output_scale))
+                self.video.write(draw)
                 print('image added to video ', draw.shape)
 
         end = timer()

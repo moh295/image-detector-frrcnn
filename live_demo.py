@@ -15,8 +15,8 @@ if __name__ == '__main__':
     checkpoint=config["checkpoint"]
     a = argparse.ArgumentParser()
     a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=0)
-    a.add_argument("--input_scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output_scale", type=int, help="input image scale", default=1)
+    a.add_argument("--input_scale",type=int, help="input image scale", default=0.266)
+    a.add_argument("--output_scale", type=int, help="input image scale", default=2)
     a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=1)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
@@ -26,9 +26,9 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(args.cam)
     fps = int(cap.get(5))
     print("fps:", fps)
-    # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-    # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-    # cap.set(cv2.CAP_PROP_FPS, 30)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+    cap.set(cv2.CAP_PROP_FPS, 30)
     print('batch size',args.batch)
     image_list = []
     tensor_list=[]
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         # Capture frame-by-frame
 
         ret, frame = cap.read()
-        # print('frame size',frame.shape)
+        print('frame size',frame.shape)
         # # Display the resulting frame
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

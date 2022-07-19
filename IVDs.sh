@@ -43,5 +43,5 @@ trtexec --onnx=faster_rcnn.onnx --saveEngine=frrcnn_engine.trt
 python3 -c "import torch ;print(torch.cuda.is_available)"
 
 
-ideal camera res 480x 640 scaled to 0.6
+ideal camera res 480x 640 scaled to 0.6 @30fps
 
