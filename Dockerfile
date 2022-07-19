@@ -3,7 +3,7 @@ FROM ho-demo-cash
 
 WORKDIR /App
 COPY . /App
-RUN pip3 intall pandas
+RUN pip3 install pandas
 ENTRYPOINT ["/bin/bash"]
 #ENTRYPOINT ["python3","live_demo.py"]
 #ENTRYPOINT ["python3","train.py"]
