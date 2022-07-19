@@ -64,7 +64,7 @@ def main(args):
 
     # Settings/parameters/constants.
 
-    CLASSES = labels_dict = ['__background__','targetobject', 'hand']
+    CLASSES  = ['__background__','Hand_free','Hand_cont','object','person']
     DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     NUM_EPOCHS = args.epoch
     SAVE_VALID_PREDICTIONS = True
