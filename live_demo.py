@@ -37,7 +37,7 @@ if __name__ == '__main__':
         ret, frame = cap.read()
         # # Display the resulting frame
         # cv2.imshow('frame', frame)
-        if cv2.waitKey(20) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         image=image_resize(frame,args.scale)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
