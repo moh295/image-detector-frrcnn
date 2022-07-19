@@ -43,7 +43,7 @@ if __name__ == '__main__':
         # cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        image=image_resize(frame,args.scale)
+        image=image_resize(frame,args.input_scale)
         tensor = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         transform=transforms.Compose([transforms.ToTensor()])
         tensor=transform(tensor)
