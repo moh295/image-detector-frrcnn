@@ -23,9 +23,10 @@ scp -r guillermo@192.168.178.143:/media/workspace/hand_object_datasets/torch_tra
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fasterrcnn_80k.pth retrain_fasterrcnn_80k.pth
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/ho2.mp4 ho2.mp4
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/output.mp4 output.mp4
-
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/output.mp4 output.mp4
 
 screen -dRaA -S torch
+screen -dRaA -S test
 
 eval $(ssh-agent);ssh-add /home/guillermo/.ssh/id_ed25519_new
 git remote add origin https://github.com/moh295/image-detector-frrcnn.git

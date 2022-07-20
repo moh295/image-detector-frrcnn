@@ -47,7 +47,8 @@ class FrRCNN:
 
             draw = np.copy(image_resize(image,output_scale))
 
-            draw=annutaion_13_classes(draw,detection_bboxes,detection_classes,detection_probs,output_scale)
+            # draw=annutaion_13_classes(draw,detection_bboxes,detection_classes,detection_probs,output_scale)
+            draw = annutaion_2_classes(draw, detection_bboxes, detection_classes, detection_probs, output_scale)
 
 
             if save:
