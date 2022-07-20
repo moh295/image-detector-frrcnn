@@ -22,7 +22,7 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", type=str, help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
-    model=FrRCNN(checkpoint)
+    model=FrRCNN(args.checkpoint)
     #loading/checking data....
     print('batch size',args.batch)
 
