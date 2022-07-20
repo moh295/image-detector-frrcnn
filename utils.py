@@ -103,7 +103,7 @@ def re_labeling_old(target):
             contact_state = int(lb['contactstate'])
             side = int(lb['handside'])
 
-            if side == 0:
+            if side == 1:
                 # free right hand
                 if contact_state == 0:
                     labels.append(labels_dict['Hand_free_R'])
@@ -303,7 +303,7 @@ def re_labeling(target):
                 for inx in range(len(hands_temp_info)):
                     h_bbx, side, objec_on_hand= hands_temp_info[inx]
                     # if hand label is R contact state
-                    if objec_on_hand and side==0:
+                    if objec_on_hand and side==1:
                         bbx_overlap = (overlap(h_bbx, box))
                         if bbx_overlap > max_overlap:
                             max_overlap = bbx_overlap
@@ -318,7 +318,7 @@ def re_labeling(target):
                 for inx in range(len(hands_temp_info)):
                     h_bbx, side, objec_on_hand = hands_temp_info[inx]
                     # if hand label is L contact state
-                    if objec_on_hand and side==1:
+                    if objec_on_hand and side==0:
                         bbx_overlap = overlap(h_bbx, box)
                         if bbx_overlap > max_overlap:
                             max_overlap = bbx_overlap

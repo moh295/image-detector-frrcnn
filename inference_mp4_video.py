@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     a = argparse.ArgumentParser()
     a.add_argument("--video", help="path to input images", default=root+'input.mp4')
-    a.add_argument("--input_scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output_scale", type=int, help="input image scale", default=2)
+    a.add_argument("--input_scale",type=float, help="input image scale", default=0.6)
+    a.add_argument("--output_scale", type=float, help="input image scale", default=2.0)
     a.add_argument("--output", help="path to output folder", default=root+'output.mp4')
     a.add_argument("--batch",type=int, help="batch size", default=60)
     a.add_argument("--fps", type=int, help="output video frame rate /s", default=30)

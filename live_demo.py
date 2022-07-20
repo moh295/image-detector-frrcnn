@@ -15,8 +15,8 @@ if __name__ == '__main__':
     checkpoint=config["checkpoint"]
     a = argparse.ArgumentParser()
     a.add_argument("--cam",type=int, help="webcam number e.g: 0 , 1", default=0)
-    a.add_argument("--input_scale",type=int, help="input image scale", default=0.6)
-    a.add_argument("--output_scale", type=int, help="input image scale", default=2)
+    a.add_argument("--input_scale",type=float, help="input image scale", default=0.6)
+    a.add_argument("--output_scale", type=float, help="input image scale", default=2.0)
     a.add_argument("--output", help="path to output folder", default=root+'output/')
     a.add_argument("--batch",type=int, help="batch size", default=1)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)

@@ -19,41 +19,18 @@ from PIL import Image
 from torch.utils.data import DataLoader
 
 import torchvision.transforms as transforms
-import transforms as T
+import transforms as t
 from trainner.utils import collate_fn
-from utils import tensor_to_numpy_cv2 , re_labeling
-import cv2
-import numpy as np
-
-
-font = cv2.FONT_HERSHEY_SIMPLEX
-# Dictionary containing some colors
-colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange': (223, 70, 14),
-          'yellow': (255, 255, 0),
-          'magenta': (255, 0, 255), 'cyan': (0, 255, 255), 'white': (255, 255, 255), 'black': (0, 0, 0),
-          'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
-          'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220), 'red 1': (255, 82, 82),
-          'red 2': (255, 82, 82), 'red 3': (255, 82, 82)}
-# labels_dict = ['targetobject', 'hand']
-
-# no contact 0 self=1, other person =2 portable object=3 , non portable =4
-#new labeling Hand_free_R =1 ,Hand_free_L=2,Hand_cont_R=3,Hand_cont_L=4  ,person_=5 ,person_L=6 ,person_LR=7,portable_R =8 ,portable_L=9, portable_LR=10
-# labels_dict = ['Hand_free_R','Hand_free_L','Hand_cont_R','Hand_cont_L' ,'person_R','person_L' ,'person_LR','portable_R' ,'portable_L', 'portable_LR']
-# labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
-#              'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
-#              'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
-
-labels_dict={'Hand_free':1,'Hand_cont':2,'object':3,'person':4}
-
+from utils import *
 def get_transform(train):
     transforms = []
     # converts the image, a PIL image, into a PyTorch Tensor
-    transforms.append(T.ToTensor())
+    transforms.append(t.ToTensor())
     if train:
         # during training, randomly flip the training images
         # and ground-truth for data augmentation
-        transforms.append(T.RandomHorizontalFlip(0.5))
-    return T.Compose(transforms)
+        transforms.append(t.RandomHorizontalFlip(0.5))
+    return t.Compose(transforms)
 
 
 
@@ -121,6 +98,7 @@ class VOCDetection(_VOCBase):
         target_dict = self.parse_voc_xml(ET_parse(self.annotations[index]).getroot())
 
         boxes, labels=re_labeling(target_dict)
+        # boxes, labels = re_labeling_old(target_dict)
 
         image_id = torch.tensor([index])
         # convert everything into a torch.Tensor
