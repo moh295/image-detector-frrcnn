@@ -24,7 +24,7 @@ scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fa
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fasterrcnn_7k_4c.pth retrain_fasterrcnn_7k_4c.pth
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/output.mp4 output.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/output_ho3_13c_200in_100out.mp4 output_ho3_13c_200in_100out.mp4
-scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/output_ho3_13c_60in_200out.mp4 output_ho3_13c_60in_200out.mp4
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/outputs/training/train.zip train.zip
 screen -dRaA -S torch
 screen -dRaA -S test
 
@@ -36,6 +36,7 @@ docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data -
 
 rm images.zip; zip -r images.zip output;aws s3 cp images.zip s3://systemimages;rm output/*.png
 
+# run docker
 git pull ; docker build . -t image-detector-frrcnn; docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data --shm-size 50G image-detector-frrcnn
 python3 live_demo.py --batch 1  --checkpoint data/torch_trained_fasterrcnn_20x10p-30p.pth
 python3 inference.py --checkpoint data/torch_trained_fasterrcnn_100p.pth --scale 1

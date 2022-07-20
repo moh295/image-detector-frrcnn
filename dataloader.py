@@ -148,12 +148,12 @@ def dataloader(batch_size,data_path):
 
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
     #train with some of the dataset
-    start_point=0
-    end_point=200
+    # start_point=0
+    # end_point=200
     # start_point=0
     # end_point=7992
-    # start_point=7992
-    # end_point=23976
+    start_point=7992
+    end_point=23976
 
     #full
     # start_point = 0
