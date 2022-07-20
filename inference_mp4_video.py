@@ -19,6 +19,7 @@ if __name__ == '__main__':
     a.add_argument("--output_scale", type=int, help="input image scale", default=2)
     a.add_argument("--output", help="path to output folder", default=root+'output.mp4')
     a.add_argument("--batch",type=int, help="batch size", default=60)
+    a.add_argument("--fps", type=int, help="output video frame rate /s", default=30)
     a.add_argument("--checkpoint", type=str, help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
@@ -48,8 +49,8 @@ if __name__ == '__main__':
         # for first frame only
         if init_vid:
             init_vid = False
-            height, width, layers = image.shape
-            fps = 30
+            height, width, layers = image_resize( image.shape,args.output_scale)
+            fps = args.fps
             print('initiat vid size', width, height, fps, args.output)
             model.create_video(width, height, fps, args.output)
 
