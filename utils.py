@@ -2,6 +2,14 @@ import cv2
 import numpy as np
 
 import torchvision.transforms as T
+# Dictionary containing some colors
+colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange': (223, 70, 14),
+          'yellow': (255, 255, 0),
+          'magenta': (255, 0, 255), 'cyan': (0, 255, 255), 'white': (255, 255, 255), 'black': (0, 0, 0),
+          'gray': (125, 125, 125), 'rand': np.random.randint(0, high=256, size=(3,)).tolist(),
+          'dark_gray': (50, 50, 50), 'light_gray': (220, 220, 220), 'red 1': (255, 82, 82),
+          'red 2': (255, 82, 82), 'red 3': (255, 82, 82)}
+font = cv2.FONT_HERSHEY_SIMPLEX
 
 def torch_model_info(model,optimizer):
     # Print model's state_dict
@@ -321,3 +329,60 @@ def re_labeling(target):
 
     return boxes, labels
 
+
+def annutaion_2_classes(numpy_image,boxes,classes,scores,output_scale):
+    labels_dict = ['targetobject', 'hand']
+    obj_prob_thresh = 0.38
+    hand_prob_thresh = 0.60
+
+    kept_indices = scores > obj_prob_thresh
+    boxes = boxes[kept_indices]
+    classes = classes[kept_indices]
+    scores = scores[kept_indices]
+
+    for bbox, cls, prob in zip(boxes.tolist(), classes.tolist(), scores.tolist()):
+        bbox = np.array(bbox).astype(int)* output_scale
+        category = labels_dict[cls - 1]
+        intensity = int(200 - 200 * prob)
+        color = (intensity, intensity, 255) if cls == 1 else (225, intensity, intensity)
+        if cls == 1:
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+        elif prob > hand_prob_thresh:
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+
+    return numpy_image
+
+def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
+
+
+    labels_dict = {'Hand_free_R': 1, 'Hand_free_L': 2, 'Hand_cont_R': 3, 'Hand_cont_L': 4,
+                   'person_R': 5, 'person_L': 6, 'person_LR': 7, 'portable_R': 8,
+                   'portable_L': 9, 'portable_LR': 10, 'non-portable_R': 11, 'non-portable_L': 12,
+                   'non-portable_LR': 13}
+
+    obj_prob_thresh = 0.15
+    hand_prob_thresh = 0.30
+    kept_indices = scores > obj_prob_thresh
+    boxes = boxes[kept_indices]
+    classes = classes[kept_indices]
+    scores = scores[kept_indices]
+
+    for bbox, cls, prob in zip(boxes.tolist(),classes.tolist(),scores.tolist()):
+        bbox = np.array(bbox).astype(int) * output_scale
+        category = list(labels_dict.keys())[cls - 1]
+
+        color_intensity = int(200 - 200 * prob)
+        Free_hand = cls < 3
+        Contact_hand = 2 < cls < 5
+        color = (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
+        hand = Free_hand or Contact_hand
+        if hand and prob > hand_prob_thresh:
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+        elif not hand and prob > obj_prob_thresh:
+            color = (color_intensity, color_intensity, 255)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+    return numpy_image
