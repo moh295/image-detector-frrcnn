@@ -19,7 +19,7 @@ if __name__ == '__main__':
     a.add_argument("--output_scale", type=int, help="input image scale", default=2)
     a.add_argument("--output", help="path to output folder", default=root+'output.mp4')
     a.add_argument("--batch",type=int, help="batch size", default=60)
-    a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
+    a.add_argument("--checkpoint", type=str, help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
     model=FrRCNN(checkpoint)
