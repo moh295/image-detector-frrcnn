@@ -341,7 +341,8 @@ def annutaion_2_classes(numpy_image,boxes,classes,scores,output_scale):
     scores = scores[kept_indices]
 
     for bbox, cls, prob in zip(boxes.tolist(), classes.tolist(), scores.tolist()):
-        bbox = np.array(bbox).astype(int)* output_scale
+        bbox = np.array(bbox)*output_scale
+        bbox=bbox.astype(int)
         category = labels_dict[cls - 1]
         intensity = int(200 - 200 * prob)
         color = (intensity, intensity, 255) if cls == 1 else (225, intensity, intensity)
@@ -370,7 +371,8 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
     scores = scores[kept_indices]
 
     for bbox, cls, prob in zip(boxes.tolist(),classes.tolist(),scores.tolist()):
-        bbox = np.array(bbox).astype(int) * output_scale
+        bbox = np.array(bbox) * output_scale
+        bbox = bbox.astype(int)
         category = list(labels_dict.keys())[cls - 1]
 
         color_intensity = int(200 - 200 * prob)

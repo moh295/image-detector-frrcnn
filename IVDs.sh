@@ -52,5 +52,7 @@ python3 inference_mp4_video.py --input ho3.3.mp4 --output_scale 1 --output data/
 
 
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --output_scale 1
-python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 1 --output_scale 1
+python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 1 --output_scale 1 --fps 60
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 0.3 --output_scale 1
+
+python3 inference_mp4_video.py  --checkpoint data/torch_trained_fasterrcnn_100p.pth
