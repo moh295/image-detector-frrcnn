@@ -1,5 +1,5 @@
-FROM image-detector-frrcnn-base
-#FROM ho-demo-cash
+#FROM image-detector-frrcnn-base
+FROM ho-demo-cash
 
 WORKDIR /App
 COPY . /App
