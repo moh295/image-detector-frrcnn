@@ -47,7 +47,7 @@ python3 -c "import torch ;print(torch.cuda.is_available)"
 
 ideal camera res 480x 640 scaled to 0.6 @30fps
 
-python3 inference_mp4_video.py --input ho3.mp4 --output data/output_ho3_13c_60in_200out.mp4 - ;python3 inference_mp4_video.py --input ho3.mp4 -- input_scale 1  --output data/output_ho3_13c_100in_200out.mp4
+python3 inference_mp4_video.py --video data/ho3.mp4 --output data/output_ho3_13c_60in_200out.mp4 --checkpoint data/retrain_fasterrcnn_80k_8ep_13c.pth ;python3 inference_mp4_video.py --video data/ho3.mp4 --input_scale 2 --output_scale 1 --output data/output_ho3_13c_200in_100out.mp4 --checkpoint data/retrain_fasterrcnn_80k_8ep_13c.pth
 
 
 

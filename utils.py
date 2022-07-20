@@ -79,7 +79,7 @@ def overlap(box1,box2):
     # print('iou',iou,box1,box2)
     return iou
 
-def re_labeling_old(target):
+def re_labeling_13c(target):
     # no contact 0 self=1, other person =2 portable object=3 , non portable =4
 
     labels_dict = {'Hand_free_R': 1, 'Hand_free_L': 2, 'Hand_cont_R': 3, 'Hand_cont_L': 4,
@@ -215,7 +215,7 @@ def re_labeling_old(target):
 
     return boxes, labels
 
-def re_labeling(target):
+def re_labeling_4c(target):
     # no contact 0 self=1, other person =2 portable object=3 , non portable =4
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
     boxes = []
@@ -378,6 +378,39 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
         color_intensity = int(200 - 200 * prob)
         Free_hand = cls < 3
         Contact_hand = 2 < cls < 5
+        color = (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
+        hand = Free_hand or Contact_hand
+        if hand and prob > hand_prob_thresh:
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+        elif not hand and prob > obj_prob_thresh:
+            color = (color_intensity, color_intensity, 255)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+    return numpy_image
+
+
+
+def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
+
+
+    labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
+
+    obj_prob_thresh = 0.15
+    hand_prob_thresh = 0.30
+    kept_indices = scores > obj_prob_thresh
+    boxes = boxes[kept_indices]
+    classes = classes[kept_indices]
+    scores = scores[kept_indices]
+
+    for bbox, cls, prob in zip(boxes.tolist(),classes.tolist(),scores.tolist()):
+        bbox = np.array(bbox) * output_scale
+        bbox = bbox.astype(int)
+        category = list(labels_dict.keys())[cls - 1]
+
+        color_intensity = int(200 - 200 * prob)
+        Free_hand = cls ==1
+        Contact_hand = cls ==2
         color = (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
         hand = Free_hand or Contact_hand
         if hand and prob > hand_prob_thresh:
