@@ -20,7 +20,7 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", help="the weight dirctory for the trained model",default=checkpoint)
     args = a.parse_args()
 
-    model=FrRCNN(checkpoint)
+    model=FrRCNN(args.checkpoint)
 
     #loading/checking data....
     batch_size=1

@@ -21,7 +21,7 @@ if __name__ == '__main__':
     a.add_argument("--batch",type=int, help="batch size", default=1)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
-    model=FrRCNN(checkpoint)
+    model=FrRCNN(args.checkpoint)
     #open cam
     cap = cv2.VideoCapture(args.cam)
     fps = int(cap.get(5))
