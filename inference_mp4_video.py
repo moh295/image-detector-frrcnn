@@ -49,7 +49,7 @@ if __name__ == '__main__':
         # for first frame only
         if init_vid:
             init_vid = False
-            height, width, layers = image_resize( image.shape,args.output_scale)
+            height, width, layers = image_resize( image,args.output_scale).shape
             fps = args.fps
             print('initiat vid size', width, height, fps, args.output)
             model.create_video(width, height, fps, args.output)
