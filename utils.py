@@ -397,8 +397,12 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
 
     obj_prob_thresh = 0.1
-    hand_prob_thresh = 0.38
+    hand_prob_thresh = 0.25
 
+    kept_indices = scores > obj_prob_thresh
+    boxes = boxes[kept_indices]
+    classes = classes[kept_indices]
+    scores = scores[kept_indices]
     #hand list
     h_boxes = boxes[classes <3]
     h_scores = scores[classes <3]
@@ -420,7 +424,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     p_scores = scores[classes == 4]
     p_kept = my_nms(p_boxes, p_scores)
     p_boxes = p_boxes[p_kept]
-    p_scores = p_scores[o_kept]
+    p_scores = p_scores[p_kept]
 
     for bbox, cls, prob in zip(h_boxes,h_cls,h_scores):
         bbox = np.array(bbox) * output_scale
