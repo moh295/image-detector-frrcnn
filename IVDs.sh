@@ -58,7 +58,7 @@ python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_tr
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 0.3 --output_scale 1
 
 python3 inference_mp4_video.py   --output data/base_4c.mp4;
-python3 inference_mp4_video.py  --video data/ho3.mp4 --output data/ho3_4c_600-200.mp4 ;
+python3 inference_mp4_video.py  --video data/ho3.mp4 --output_scale 1.2 --output data/ho3_4c_600-200.mp4 ;
 python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/ho2_4c_600-200.mp4;
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/ho3.3_4c.mp4
 
