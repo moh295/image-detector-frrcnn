@@ -404,7 +404,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     h_boxes = h_boxes[h_kept]
     h_scores = h_scores[h_kept]
     h_cls = h_cls[h_kept]
-    max_hand_box=max([box_size(box) for box in h_boxes])
+    max_hand_box=max([box_size(box) for box in h_boxes]) if len(h_boxes) else False
 
     #object
     o_boxes=boxes[classes==3]
@@ -435,7 +435,9 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
         category='object'
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
-        acceptable_size=box_size(bbox)<max_hand_box*max_size_ratio
+        acceptable_size=True
+        if max_hand_box:
+            acceptable_size=box_size(bbox)<max_hand_box*max_size_ratio
 
         color_intensity = int(200 - 200 * prob)
         color = (color_intensity, color_intensity, 255) if acceptable_size else (0, color_intensity, color_intensity)
