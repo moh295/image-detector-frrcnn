@@ -474,7 +474,7 @@ def my_nms(boxes,scores):
             # to speed up don't compare with the removed ones
             if keep_inx[box1] and keep_inx[box2]:
                 #if boxes overlap iou>0.5
-                if overlap(boxes[box1],boxes[box2])>0.1:
+                if overlap(boxes[box1],boxes[box2])>0:
                     #chose the smaller one if no much difference in score
                     if box_size(boxes[box1]) < box_size(boxes[box2]) \
                             and scores[box1]*1.5>scores[box2]:

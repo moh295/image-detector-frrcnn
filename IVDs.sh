@@ -1,17 +1,17 @@
 
 #ssh machines
-D22rFbRcj61648572524
+# id D22rFbRcj61648572524
 puplic ip
 ssh guillermo@45.158.142.229
 EYA61yxxn
 
-4hIc24bZXK1644913824
+#id 4hIc24bZXK1644913824
 local ip
 ssh guillermo@192.168.188.124
 Mb6TNx0hR8
 
 
-ZzTe4LcpaA1657108798
+#id ZzTe4LcpaA1657108798
 puplic ip
 ssh guillermo@45.158.142.230
 vdP93907qi
