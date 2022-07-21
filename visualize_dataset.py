@@ -3,6 +3,8 @@ import  json
 import argparse
 from utils import *
 from dataloader import dataloader
+from timeit import default_timer as timer
+from datetime import timedelta
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 # Dictionary containing some colors
@@ -63,6 +65,7 @@ def show_labeld_images(loader):
 
 def count_objets_per_class(loaders,labels_dict):
     count=[0]*len(labels_dict)
+    stat=timer()
     print('counting ....')
     for loader in loaders:
         for batch in loader:
@@ -73,8 +76,13 @@ def count_objets_per_class(loaders,labels_dict):
                     count[cls-1]+=1
 
     #result
+    end = timer()
+    elapsed = timedelta(seconds=end - start)
+    print('finished in ', elapsed)
     for i in range(len(labels_dict)):
         print(f'there is {count[i]} of {list(labels_dict.keys())[i]}')
+
+
     return count
 
 if __name__ == '__main__':
