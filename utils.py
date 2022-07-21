@@ -396,32 +396,33 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
 
-    obj_prob_thresh = 0.01
+    obj_prob_thresh = 0.1
     hand_prob_thresh = 0.38
-    # kept_indices = scores > obj_prob_thresh
-    # boxes = boxes[kept_indices]
-    # classes = classes[kept_indices]
-    # scores = scores[kept_indices]
 
-    h_boxes = boxes[classes == 1 or classes == 2]
-    h_scores = scores[classes == 1 or classes == 2]
-    h_cls=classes[classes == 1 or classes == 2]
-    o_boxes=boxes[classes>2]
-    o_scores=scores[classes>2]
-    o_cls=classes[classes>2]
+    #hand list
+    h_boxes = boxes[classes <3]
+    h_scores = scores[classes <3]
+    h_cls=classes[classes <3]
+    h_kept = my_nms(h_boxes, h_scores)
+    h_boxes = h_boxes[h_kept]
+    h_scores = h_scores[h_kept]
+    h_cls = h_cls[h_kept]
 
-    h_kept=my_nms(h_boxes,h_scores)
-    o_kept=my_nms(o_boxes,o_scores)
-    h_boxes=h_boxes[h_kept]
-    h_scores=h_scores[h_kept]
-    h_cls=h_cls[h_kept]
-    o_boxes=o_boxes=[o_kept]
-    o_scores=o_scores[o_kept]
-    o_cls=o_cls[o_kept]
+    #object
+    o_boxes=boxes[classes==3]
+    o_scores=scores[classes==3]
+    o_kept = my_nms(o_boxes, o_scores)
+    o_boxes = o_boxes[o_kept]
+    o_scores = o_scores[o_kept]
 
+    #preson list
+    p_boxes = boxes[classes == 4]
+    p_scores = scores[classes == 4]
+    p_kept = my_nms(p_boxes, p_scores)
+    p_boxes = p_boxes[p_kept]
+    p_scores = p_scores[o_kept]
 
-
-    for bbox, cls, prob in zip(h_boxes.tolist(),h_cls.tolist(),h_scores.tolist()):
+    for bbox, cls, prob in zip(h_boxes,h_cls,h_scores):
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
         category = list(labels_dict.keys())[cls - 1]
@@ -432,25 +433,36 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
-    for bbox, cls, prob in zip(o_boxes.tolist(), o_cls.tolist(), o_scores.tolist()):
+    for bbox, prob in zip(o_boxes, o_scores):
+        category='object'
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
-        category = list(labels_dict.keys())[cls - 1]
-        color_intensity = int(200 - 200 * prob)
-        color = (color_intensity, color_intensity, 255) if cls ==3 else (color_intensity, color_intensity, 150)
-        if prob > obj_prob_thresh:
 
+        color_intensity = int(200 - 200 * prob)
+        color = (color_intensity, color_intensity, 255)
+        if prob > obj_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+    for bbox , prob in zip(p_boxes,p_scores):
+        category = 'pesone'
+        bbox = np.array(bbox) * output_scale
+        bbox = bbox.astype(int)
+        color_intensity = int(200 - 200 * prob)
+        color = (color_intensity, color_intensity, 150)
+        if prob > obj_prob_thresh:
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+
 
     return numpy_image
 
 def box_size(box):
-    width = box[3] - box[1]
-    hight = box[4] - box[2]
+    width = box[2] - box[0]
+    hight = box[3] - box[1]
     return width * hight
 
 def my_nms(boxes,scores):
+    if len(boxes)==0 :return False
     keep_inx = np.array([True] * len(boxes))
     # compare the size, scoer and overlap of all the boxes
     for box1 in range(len(boxes) - 1):
@@ -458,15 +470,11 @@ def my_nms(boxes,scores):
             # to speed up don't compare with the removed ones
             if keep_inx[box1] and keep_inx[box2]:
                 #if boxes overlap iou>0.5
-                if overlap(boxes[box1],boxes[box2])>0.5:
+                if overlap(boxes[box1],boxes[box2])>0.1:
                     #chose the smaller one if no much difference in score
                     if box_size(boxes[box1]) < box_size(boxes[box2]) \
-                            and scores[box1]*2>scores[box2]:
+                            and scores[box1]*1.5>scores[box2]:
                         keep_inx[box2] = False
                     else:
                         keep_inx[box1] = False
     return keep_inx
-
-
-
-

@@ -1,5 +1,5 @@
 {
 
 "data root": "data/",
-"checkpoint": "data/retrain_fasterrcnn_80k.pth"
+"checkpoint": "data/retrain_fasterrcnn_80k_4c.pth"
 }
