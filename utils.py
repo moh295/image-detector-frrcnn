@@ -438,7 +438,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
         acceptable_size=box_size(bbox)<max_hand_box*max_size_ratio
 
         color_intensity = int(200 - 200 * prob)
-        color = (color_intensity, color_intensity, color_intensity) if acceptable_size else (color_intensity, color_intensity, 255)
+        color = (color_intensity, color_intensity, 255) if acceptable_size else (0, color_intensity, color_intensity)
         if prob > obj_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
