@@ -390,7 +390,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     obj_prob_thresh = 0.1
     hand_prob_thresh = 0.25
     # obj acceptable_size will be hand_max * max_size_ratio
-    max_size_ratio= 4
+    max_size_ratio= 10
 
     kept_indices = scores > obj_prob_thresh
     boxes = boxes[kept_indices]

@@ -53,14 +53,16 @@ python3 inference_mp4_video.py --video data/ho3.mp4 --output data/output_ho3_13c
 
 
 
-python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --output_scale 1
+
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 1 --output_scale 1 --fps 60
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 0.3 --output_scale 1
 
-python3 inference_mp4_video.py  --checkpoint data/retrain_fasterrcnn_80k_4c.pth --output data/base_4c.mp4;
+python3 inference_mp4_video.py   --output data/base_4c.mp4;
 python3 inference_mp4_video.py  --video data/ho3.mp4 --output data/ho3_4c_600-200.mp4 ;
-python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/ho2_4c_600-200.mp4
+python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/ho2_4c_600-200.mp4;
+python3 inference_mp4_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/ho3.3_4c.mp4
 
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/base_4c.mp4 base_4c.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho2_4c_600-200.mp4 ho2_4c_600-200.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3_4c_600-200.mp4 ho3_4c_600-200.mp4
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3.3_4c.mp4 ho3.3_4c.mp4
