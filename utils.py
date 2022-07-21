@@ -393,11 +393,11 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
 
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
-
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
-
     obj_prob_thresh = 0.1
     hand_prob_thresh = 0.25
+    # obj acceptable_size will be hand_max * max_size_ratio
+    max_size_ratio= 4
 
     kept_indices = scores > obj_prob_thresh
     boxes = boxes[kept_indices]
@@ -411,6 +411,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     h_boxes = h_boxes[h_kept]
     h_scores = h_scores[h_kept]
     h_cls = h_cls[h_kept]
+    max_hand_box=max([box_size(box) for box in h_boxes])
 
     #object
     o_boxes=boxes[classes==3]
@@ -441,12 +442,14 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
         category='object'
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
+        acceptable_size=box_size(bbox)<max_hand_box*max_size_ratio
 
         color_intensity = int(200 - 200 * prob)
-        color = (color_intensity, color_intensity, 255)
+        color = (color_intensity, color_intensity, color_intensity) if acceptable_size else (color_intensity, color_intensity, 255)
         if prob > obj_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+
     for bbox , prob in zip(p_boxes,p_scores):
         category = 'pesone'
         bbox = np.array(bbox) * output_scale
@@ -456,8 +459,6 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
         if prob > obj_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
-
-
     return numpy_image
 
 def box_size(box):
