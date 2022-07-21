@@ -97,8 +97,8 @@ class VOCDetection(_VOCBase):
         img = Image.open(self.images[index]).convert("RGB")
         target_dict = self.parse_voc_xml(ET_parse(self.annotations[index]).getroot())
 
-        boxes, labels=re_labeling_4c(target_dict)
-        # boxes, labels = re_labeling_old(target_dict)
+        # boxes, labels=re_labeling_4c(target_dict)
+        boxes, labels = re_labeling_13c(target_dict)
 
         image_id = torch.tensor([index])
         # convert everything into a torch.Tensor
