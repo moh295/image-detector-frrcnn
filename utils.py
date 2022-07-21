@@ -396,28 +396,77 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
 
-    obj_prob_thresh = 0.20
+    obj_prob_thresh = 0.01
     hand_prob_thresh = 0.38
-    kept_indices = scores > obj_prob_thresh
-    boxes = boxes[kept_indices]
-    classes = classes[kept_indices]
-    scores = scores[kept_indices]
+    # kept_indices = scores > obj_prob_thresh
+    # boxes = boxes[kept_indices]
+    # classes = classes[kept_indices]
+    # scores = scores[kept_indices]
 
-    for bbox, cls, prob in zip(boxes.tolist(),classes.tolist(),scores.tolist()):
+    h_boxes = boxes[classes == 1 or classes == 2]
+    h_scores = scores[classes == 1 or classes == 2]
+    h_cls=classes[classes == 1 or classes == 2]
+    o_boxes=boxes[classes>2]
+    o_scores=scores[classes>2]
+    o_cls=classes[classes>2]
+
+    h_kept=my_nms(h_boxes,h_scores)
+    o_kept=my_nms(o_boxes,o_scores)
+    h_boxes=h_boxes[h_kept]
+    h_scores=h_scores[h_kept]
+    h_cls=h_cls[h_kept]
+    o_boxes=o_boxes=[o_kept]
+    o_scores=o_scores[o_kept]
+    o_cls=o_cls[o_kept]
+
+
+
+    for bbox, cls, prob in zip(h_boxes.tolist(),h_cls.tolist(),h_scores.tolist()):
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
         category = list(labels_dict.keys())[cls - 1]
-
         color_intensity = int(200 - 200 * prob)
         Free_hand = cls ==1
-        Contact_hand = cls ==2
         color = (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
-        hand = Free_hand or Contact_hand
-        if hand and prob > hand_prob_thresh:
+        if  prob > hand_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
-        elif not hand and prob > obj_prob_thresh:
-            color = (color_intensity, color_intensity, 255)
+
+    for bbox, cls, prob in zip(o_boxes.tolist(), o_cls.tolist(), o_scores.tolist()):
+        bbox = np.array(bbox) * output_scale
+        bbox = bbox.astype(int)
+        category = list(labels_dict.keys())[cls - 1]
+        color_intensity = int(200 - 200 * prob)
+        color = (color_intensity, color_intensity, 255) if cls ==3 else (color_intensity, color_intensity, 150)
+        if prob > obj_prob_thresh:
+
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+
     return numpy_image
+
+def box_size(box):
+    width = box[3] - box[1]
+    hight = box[4] - box[2]
+    return width * hight
+
+def my_nms(boxes,scores):
+    keep_inx = np.array([True] * len(boxes))
+    # compare the size, scoer and overlap of all the boxes
+    for box1 in range(len(boxes) - 1):
+        for box2 in range(box1 + 1, len(boxes)):
+            # to speed up don't compare with the removed ones
+            if keep_inx[box1] and keep_inx[box2]:
+                #if boxes overlap iou>0.5
+                if overlap(boxes[box1],boxes[box2])>0.5:
+                    #chose the smaller one if no much difference in score
+                    if box_size(boxes[box1]) < box_size(boxes[box2]) \
+                            and scores[box1]*2>scores[box2]:
+                        keep_inx[box2] = False
+                    else:
+                        keep_inx[box1] = False
+    return keep_inx
+
+
+
+
