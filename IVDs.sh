@@ -24,17 +24,18 @@ scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fa
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/retrain_fasterrcnn_80k_4c.pth retrain_fasterrcnn_80k_4c.pth
 scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/output.mp4 output.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/output_ho3_13c_200in_100out.mp4 output_ho3_13c_200in_100out.mp4
-scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/outputs/training/train.zip train.zip
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/output.mp4 output.mp4
 screen -dRaA -S torch
 screen -dRaA -S test
 
+# github access
 eval $(ssh-agent);ssh-add /home/guillermo/.ssh/id_ed25519_new
 git remote add origin https://github.com/moh295/image-detector-frrcnn.git
 
+# build base
 git pull; docker build . -t image-detector-frrcnn-base -f DockerfileBase
 docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data --shm-size 50G image-detector-frrcnn-base
 
-rm images.zip; zip -r images.zip output;aws s3 cp images.zip s3://systemimages;rm output/*.png
 
 # run docker
 git pull ; docker build . -t image-detector-frrcnn; docker run -it --privileged -v /media/workspace/hand_object_datasets:/App/data --shm-size 50G image-detector-frrcnn
@@ -56,5 +57,7 @@ python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_tr
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 1 --output_scale 1 --fps 60
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 0.3 --output_scale 1
 
-python3 inference_mp4_video.py  --checkpoint data/retrain_fasterrcnn_7k_4c.pth
-python3 inference_mp4_video.py  --video data/ho3.mp4 --output data/ho3_4c_600-200.mp4 --checkpoint data/retrain_fasterrcnn_7k_4c.pth
+python3 inference_mp4_video.py  --checkpoint data/retrain_fasterrcnn_80k_4c.pth
+python3 inference_mp4_video.py  --video data/ho3.mp4 --output data/ho3_4c_600-200.mp4 --checkpoint data/retrain_fasterrcnn_80k_4c.pth
+python3 inference_mp4_video.py  --video data/ho1.mp4 --output data/ho1_4c_600-200.mp4 --checkpoint data/retrain_fasterrcnn_80k_4c.pth;
+python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/ho2_4c_600-200.mp4 --checkpoint data/retrain_fasterrcnn_80k_4c.pth

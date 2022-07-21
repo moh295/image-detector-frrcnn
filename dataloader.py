@@ -150,8 +150,6 @@ def dataloader(batch_size,data_path):
     #train with some of the dataset
     # start_point=0
     # end_point=200
-    # start_point=0
-    # end_point=7992
     # start_point=7992
     # end_point=23976
 

@@ -396,8 +396,8 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
 
-    obj_prob_thresh = 0.15
-    hand_prob_thresh = 0.30
+    obj_prob_thresh = 0.20
+    hand_prob_thresh = 0.38
     kept_indices = scores > obj_prob_thresh
     boxes = boxes[kept_indices]
     classes = classes[kept_indices]
