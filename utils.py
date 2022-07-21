@@ -248,9 +248,6 @@ def re_labeling_4c(target):
             else:
                 labels.append(labels_dict['Hand_cont'])
                 objects_temp_inf = labels_dict['object']
-
-
-
             box = [None] * 4
             xmin = int(lb['bndbox']['xmin'])
             ymin = int(lb['bndbox']['ymin'])
@@ -351,8 +348,6 @@ def annutaion_2_classes(numpy_image,boxes,classes,scores,output_scale):
     return numpy_image
 
 def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
-
-
     labels_dict = {'Hand_free_R': 1, 'Hand_free_L': 2, 'Hand_cont_R': 3, 'Hand_cont_L': 4,
                    'person_R': 5, 'person_L': 6, 'person_LR': 7, 'portable_R': 8,
                    'portable_L': 9, 'portable_LR': 10, 'non-portable_R': 11, 'non-portable_L': 12,

@@ -1,9 +1,7 @@
 import transforms as T
 import  json
 import argparse
-from utils import tensor_to_numpy_cv2 , re_labeling
-import cv2
-import numpy as np
+from utils import *
 from dataloader import dataloader
 
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -37,6 +35,48 @@ def get_transform(train):
         transforms.append(T.RandomHorizontalFlip(0.5))
     return T.Compose(transforms)
 
+def show_labeld_images(loader):
+    for batch in loader:
+        images, targets = batch
+
+        for target, image in zip(targets, images):
+            # print(target['dict']['annotation']['object'])
+            # print(len(target['dict']),len(target['boxes']))
+            image = tensor_to_numpy_cv2(image)
+            draw = np.copy(image)
+            # print('target',target['dict'])
+            for bbox, cls in zip(target['boxes'], target['labels']):
+                bbox = np.array(bbox).astype(int)
+                # print('label',cls,labels_dict[cls-1])
+
+                # targetoject
+                if cls == 1:
+                    color = (0, 0, 225)
+                    # cv2.putText(draw, f'{labels_dict[cls-1]:s} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+                else:
+                    color = (225, 0, 0)
+                cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
+                # cv2.putText(draw, f'{labels_dict[cls-1]:s} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+                cv2.putText(draw, f'{list(labels_dict.keys())[cls - 1]} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
+            cv2.imshow('image', draw)
+            cv2.waitKey(0)
+
+def count_objets_per_class(loaders,labels_dict):
+    count=[0]*len(labels_dict)
+    print('counting ....')
+    for loader in loaders:
+        for batch in loader:
+            images, targets = batch
+            for target in targets:
+                for cls in target['labels']:
+                    # bbox = np.array(bbox).astype(int)
+                    count[cls-1]+=1
+
+    #result
+    for i in range(len(labels_dict)):
+        print(f'there is {count[i]} of {list(labels_dict.keys())[i]}')
+    return count
+
 if __name__ == '__main__':
     file = 'config.json'
     with open(file) as json_data_file:
@@ -52,27 +92,8 @@ if __name__ == '__main__':
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     train_loader, trainval_loader, val_loader = dataloader(args.batch, args.dataset)
-    for batch in val_loader:
-        images, targets = batch
 
-        for target,image in zip(targets,images):
-            # print(target['dict']['annotation']['object'])
-            # print(len(target['dict']),len(target['boxes']))
-            image=tensor_to_numpy_cv2(image)
-            draw = np.copy(image)
-            # print('target',target['dict'])
-            for bbox ,cls in zip(target['boxes'],target['labels']):
-                bbox = np.array(bbox).astype(int)
-                # print('label',cls,labels_dict[cls-1])
+    #to show images wit labels
+    #show_labeld_images(train_loader)
 
-                #targetoject
-                if cls==1:
-                    color = (0, 0, 225)
-                    # cv2.putText(draw, f'{labels_dict[cls-1]:s} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
-                else :
-                    color=(225,0,0)
-                cv2.rectangle(draw, bbox[:2], bbox[2:4], color, 2)
-                # cv2.putText(draw, f'{labels_dict[cls-1]:s} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
-                cv2.putText(draw, f'{list(labels_dict.keys())[cls-1]} ', bbox[:2], font, 1, color, 2, cv2.LINE_AA)
-            cv2.imshow('image',draw)
-            cv2.waitKey(0)
+    count_objets_per_class([train_loader, trainval_loader, val_loader],labels_dict)
