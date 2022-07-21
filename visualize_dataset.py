@@ -65,7 +65,7 @@ def show_labeld_images(loader):
 
 def count_objets_per_class(loaders,labels_dict):
     count=[0]*len(labels_dict)
-    stat=timer()
+    start=timer()
     print('counting ....')
     for loader in loaders:
         for batch in loader:
