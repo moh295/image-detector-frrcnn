@@ -299,7 +299,6 @@ def re_labeling_4c(target):
 
             # objet on contact with right hand only
             elif is_obj_contact_R:
-
                 for inx in range(len(hands_temp_info)):
                     h_bbx, side, objec_on_hand= hands_temp_info[inx]
                     # if hand label is R contact state
@@ -309,9 +308,7 @@ def re_labeling_4c(target):
                             max_overlap = bbx_overlap
                             max_overalp_at = inx
                 _, _, objec_on_hand = hands_temp_info[max_overalp_at]
-
                 labels.append(objec_on_hand)
-
 
             # objet on contact with left hand only
             elif is_obj_contact_L:
@@ -326,9 +323,7 @@ def re_labeling_4c(target):
                 _, _,objec_on_hand = hands_temp_info[max_overalp_at]
                 labels.append(objec_on_hand)
             # print('max_overalp_at', max_overalp_at, hands_temp_info)
-
     return boxes, labels
-
 
 def annutaion_2_classes(numpy_image,boxes,classes,scores,output_scale):
     labels_dict = ['targetobject', 'hand']
@@ -388,8 +383,6 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
     return numpy_image
-
-
 
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
