@@ -21,11 +21,11 @@ colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange
 # side_map3 = {0:'L', 1:'R'}
 # state_map = {0:'No Contact', 1:'Self Contact', 2:'Another Person', 3:'Portable Object', 4:'Stationary Object'}
 
-labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
-             'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
-             'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
+# labels_dict={'Hand_free_R':1,'Hand_free_L':2,'Hand_cont_R':3,'Hand_cont_L':4 ,
+#              'person_R':5,'person_L':6 ,'person_LR':7,'portable_R':8 ,
+#              'portable_L':9, 'portable_LR':10,'non-portable_R':11,'non-portable_L':12,'non-portable_LR':13}
 
-# labels_dict={'Hand_free':1,'Hand_cont':2,'object':3,'person':4}
+labels_dict={'Hand_free':1,'Hand_cont':2,'object':3,'person':4}
 
 def get_transform(train):
     transforms = []
@@ -104,4 +104,4 @@ if __name__ == '__main__':
     #to show images wit labels
     #show_labeld_images(train_loader)
 
-    count_objets_per_class([train_loader, trainval_loader, val_loader],labels_dict)
+    count_objets_per_class([trainval_loader],labels_dict)

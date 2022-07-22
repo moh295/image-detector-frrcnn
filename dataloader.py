@@ -2,22 +2,16 @@ import torch
 import collections
 import os
 from xml.etree.ElementTree import Element as ET_Element
-
 from torchvision.datasets.vision import VisionDataset
 from torchvision.datasets.utils import  verify_str_arg
 from torchvision import datasets
-
 try:
     from defusedxml.ElementTree import parse as ET_parse
 except ImportError:
     from xml.etree.ElementTree import parse as ET_parse
-
 from typing import Any, Callable, Dict, Optional, Tuple, List
-
 from PIL import Image
-
 from torch.utils.data import DataLoader
-
 import torchvision.transforms as transforms
 import transforms as t
 from trainner.utils import collate_fn
@@ -31,45 +25,31 @@ def get_transform(train):
         # and ground-truth for data augmentation
         transforms.append(t.RandomHorizontalFlip(0.5))
     return t.Compose(transforms)
-
-
-
 class _VOCBase(VisionDataset):
     _SPLITS_DIR: str
     _TARGET_DIR: str
     _TARGET_FILE_EXT: str
-
     def __init__(
         self,
         root: str,
         image_set: str = "train",
-
-
         transforms: Optional[Callable] = None,
     ):
 
         super().__init__(root,transforms)
-
-
         valid_image_sets = ["train", "trainval", "val"]
-
         self.image_set = verify_str_arg(image_set, "image_set", valid_image_sets)
-
         voc_root=self.root
         if not os.path.isdir(voc_root):
             raise RuntimeError("Dataset not found or corrupted. You can use download=True to download it")
-
         splits_dir = os.path.join(voc_root, "ImageSets", self._SPLITS_DIR)
         split_f = os.path.join(splits_dir, image_set.rstrip("\n") + ".txt")
         with open(os.path.join(split_f)) as f:
             file_names = [x.strip() for x in f.readlines()]
-
         image_dir = os.path.join(voc_root, "JPEGImages")
         self.images = [os.path.join(image_dir, x + ".jpg") for x in file_names]
-
         target_dir = os.path.join(voc_root, self._TARGET_DIR)
         self.targets = [os.path.join(target_dir, x + self._TARGET_FILE_EXT) for x in file_names]
-
         assert len(self.images) == len(self.targets)
 
     def __len__(self) -> int:
@@ -97,8 +77,8 @@ class VOCDetection(_VOCBase):
         img = Image.open(self.images[index]).convert("RGB")
         target_dict = self.parse_voc_xml(ET_parse(self.annotations[index]).getroot())
 
-        # boxes, labels=re_labeling_4c(target_dict)
-        boxes, labels = re_labeling_13c(target_dict)
+        boxes, labels=re_labeling_4c(target_dict)
+        # boxes, labels = re_labeling_13c(target_dict)
 
         image_id = torch.tensor([index])
         # convert everything into a torch.Tensor
