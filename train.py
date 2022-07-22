@@ -48,9 +48,9 @@ def parse_opt():
                    default=False)
     a.add_argument("--output", type=str, help="project name", default='new_project')
 
-    a.add_argument("--batch", type=int, help="batch size", default=30)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=8)
-    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
+    a.add_argument("--batch", type=int, help="batch size", default=16)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=12)
+    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
 
     a.add_argument("--dataset", type=str, help="PSCAL VOC2007 format folder",
                    default=root + 'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
@@ -61,9 +61,7 @@ def parse_opt():
 
 def main(args):
 
-
     # Settings/parameters/constants.
-
     CLASSES  = ['__background__','Hand_free','Hand_cont','object','person']
     DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     NUM_EPOCHS = args.epoch
