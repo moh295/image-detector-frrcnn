@@ -15,7 +15,7 @@ if __name__ == '__main__':
     a.add_argument("--dataset", help="PSCAL VOC2007 format folder", default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     a.add_argument("--scale",type=int, help="input image scale", default=0.6)
     a.add_argument("--output", help="path to output folder", default=root+'output/')
-    a.add_argument("--batch",type=int, help="batch size", default=60)
+    a.add_argument("--batch",type=int, help="batch size", default=1)
     a.add_argument("--checkpoint", help="train model weight", default=checkpoint)
     args = a.parse_args()
     #loading model
@@ -26,5 +26,5 @@ if __name__ == '__main__':
     count=1
     for tensors in val_loader:
         images_lsit = [tensor_to_numpy_cv2(image)for image in tensors[0]]
-        model.predict(args.output, tensors=tensors[0],save=True,count=count,images=images_lsit)
+        model.predict(args.output, tensors=tensors[0],save=False,show=True,count=count,images=images_lsit)
         count+=args.batch

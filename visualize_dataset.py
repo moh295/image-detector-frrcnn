@@ -102,6 +102,7 @@ if __name__ == '__main__':
     train_loader, trainval_loader, val_loader = dataloader(args.batch, args.dataset)
 
     #to show images wit labels
-    #show_labeld_images(train_loader)
+    show_labeld_images(val_loader)
 
-    count_objets_per_class([trainval_loader],labels_dict)
+    # count the all the classes in datasets
+    # count_objets_per_class([trainval_loader],labels_dict)

@@ -27,8 +27,7 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
                                                    gamma=0.1)
 
     for epoch in range(num_epochs):
-        logs=train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
-        print('print log',type(logs),logs)
+        train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
@@ -37,8 +36,6 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)
     return model.state_dict()
-
-
 
 if __name__ == '__main__':
 

@@ -382,12 +382,13 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
-    obj_prob_thresh = 0.01
+    peson_prob_thresh=0.01
+    obj_prob_thresh = 0.1
     hand_prob_thresh = 0.25
     # obj acceptable_size will be hand_max * max_size_ratio
     max_size_ratio= 10
 
-    kept_indices = scores > obj_prob_thresh
+    kept_indices = scores > peson_prob_thresh
     boxes = boxes[kept_indices]
     classes = classes[kept_indices]
     scores = scores[kept_indices]
@@ -448,7 +449,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
         bbox = bbox.astype(int)
         color_intensity = int(200 - 200 * prob)
         color = (color_intensity, 255, 255)
-        if prob > obj_prob_thresh:
+        if prob > peson_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
     return numpy_image
@@ -469,9 +470,10 @@ def my_nms(boxes,scores):
                 #if boxes overlap iou>0.5
                 if overlap(boxes[box1],boxes[box2])>0:
                     #chose the smaller one if no much difference in score
-                    if box_size(boxes[box1]) < box_size(boxes[box2]) \
-                            and scores[box1]*1.9>scores[box2]:
-                        keep_inx[box2] = False
-                    else:
+                    if box_size(boxes[box1]) > box_size(boxes[box2]) \
+                            and scores[box1]<scores[box2]*4:
+                    # if scores[box1] > scores[box2]:
                         keep_inx[box1] = False
+                    else:
+                        keep_inx[box2] = False
     return keep_inx
