@@ -94,7 +94,8 @@ def main(args):
     # loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(DEVICE)
     if args.checkpoint:
-        model.load_state_dict(torch.load(args.checkpoint['model_state_dict'], map_location=torch.device(DEVICE)))
+        checkpoint = torch.load(args.checkpoint, map_location=DEVICE)
+        model.load_state_dict(torch.load(checkpoint['model_state_dict'], map_location=DEVICE))
     model.eval()
     # keys = list(args.checkpoint['model_state_dict'].keys())
     # for i in range(len(keys) - 14):
