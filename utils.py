@@ -382,7 +382,7 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
-    obj_prob_thresh = 0.1
+    obj_prob_thresh = 0.01
     hand_prob_thresh = 0.25
     # obj acceptable_size will be hand_max * max_size_ratio
     max_size_ratio= 10
@@ -470,7 +470,7 @@ def my_nms(boxes,scores):
                 if overlap(boxes[box1],boxes[box2])>0:
                     #chose the smaller one if no much difference in score
                     if box_size(boxes[box1]) < box_size(boxes[box2]) \
-                            and scores[box1]*1.5>scores[box2]:
+                            and scores[box1]*1.9>scores[box2]:
                         keep_inx[box2] = False
                     else:
                         keep_inx[box1] = False
