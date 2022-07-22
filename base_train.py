@@ -46,18 +46,16 @@ if __name__ == '__main__':
     with open(file) as json_data_file:
         config = json.load(json_data_file)
     root = config["data root"]
-    checkpoint = root + 'torch_trained_fasterrcnn_100p.pth'
 
-    new_checkpoint = root+'retrain_fasterrcnn_80k.pth'
+    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_8e-12e.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
-    a.add_argument("--batch",type=int, help="batch size", default=30)
+    a.add_argument("--batch",type=int, help="batch size", default=16)
     a.add_argument("--epoch", type=int, help="number of epoch", default=8)
-    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
-
+    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
                    default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     args = a.parse_args()
@@ -65,7 +63,7 @@ if __name__ == '__main__':
     #loading model
     model = models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=False).to(device)
     if args.checkpoint:
-        model.load_state_dict(torch.load(checkpoint, map_location=torch.device(device)))
+        model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device(device)))
     model.eval()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
