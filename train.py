@@ -170,7 +170,7 @@ def main(args):
 
         coco_evaluator, stats = evaluate(
             model,
-            valid_loader,
+            trainval_loader,
             device=DEVICE,
             save_valid_preds=SAVE_VALID_PREDICTIONS,
             out_dir=OUT_DIR,
