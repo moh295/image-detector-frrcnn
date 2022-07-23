@@ -78,7 +78,7 @@ def train_one_epoch(
         train_loss_hist.send(loss_value)
 
         if scheduler is not None:
-            scheduler.step(epoch + (step_counter/len(data_loader)))
+            scheduler.step()
 
     return metric_logger, batch_loss_list
 

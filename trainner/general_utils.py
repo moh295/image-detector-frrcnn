@@ -297,11 +297,11 @@ def set_infer_dir():
     and creates a new one in `outputs/inference/`.
     And returns the directory path.
     """
-    if not os.path.exists('outputs/inference'):
-        os.makedirs('outputs/inference')
-    num_infer_dirs_present = len(os.listdir('outputs/inference/'))
+    if not os.path.exists('data/outputs/inference'):
+        os.makedirs('data/outputs/inference')
+    num_infer_dirs_present = len(os.listdir('data/outputs/inference/'))
     next_dir_num = num_infer_dirs_present + 1
-    new_dir_name = f"outputs/inference/res_{next_dir_num}"
+    new_dir_name = f"data/outputs/inference/res_{next_dir_num}"
     os.makedirs(new_dir_name, exist_ok=True)
     return new_dir_name
 
