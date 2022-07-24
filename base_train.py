@@ -31,7 +31,7 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
-        # evaluate(model, data_loader_test, device=device)
+        evaluate(model, data_loader_test, device=device)
     end = timer()
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)

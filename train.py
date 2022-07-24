@@ -48,9 +48,9 @@ def parse_opt():
                    default=False)
     a.add_argument("--output", type=str, help="project name", default='new_project')
 
-    a.add_argument("--batch", type=int, help="batch size", default=16)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=12)
-    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
+    a.add_argument("--batch", type=int, help="batch size", default=1024)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=8)
+    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
 
     a.add_argument("--dataset", type=str, help="PSCAL VOC2007 format folder",
                    default=root + 'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
@@ -130,15 +130,14 @@ def main(args):
     # Define the optimizer.
     # optimizer = torch.optim.SGD(params, lr=0.001, momentum=0.9, nesterov=True)
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    optimizer = torch.optim.AdamW(params, lr=0.0001, weight_decay=0.0005)
+    # optimizer = torch.optim.AdamW(params, lr=0.0001, weight_decay=0.0005)
 
-    # params = [p for p in model.parameters() if p.requires_grad]
-    # optimizer = torch.optim.SGD(params, lr=0.005,
-    #                             momentum=0.9, weight_decay=0.0005)
-    # # and a learning rate scheduler
-    # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
-    #                                                step_size=3,
-    #                                                gamma=0.1)
+    optimizer = torch.optim.SGD(params, lr=0.005,
+                                momentum=0.9, weight_decay=0.0005)
+
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
+                                                   step_size=3,
+                                                   gamma=0.1)
 
     # if args['cosine_annealing']:
     #     # LR will be zero as we approach `steps` number of epochs each time.
@@ -163,9 +162,12 @@ def main(args):
             DEVICE,
             epoch,
             train_loss_hist,
-            print_freq=100,
+            print_freq=args.print_freq,
             scheduler=scheduler
         )
+
+        # update the learning rate
+        lr_scheduler.step()
 
         coco_evaluator, stats = evaluate(
             model,
