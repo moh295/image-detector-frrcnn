@@ -128,26 +128,36 @@ def dataloader(batch_size,data_path):
 
     train_dataset = VOCDetection(root=data_path, image_set='train', transforms=get_transform(train=True))
     #train with some of the dataset
-    # start_point=0
-    # end_point=200
+    start_point=0
+    end_point=200
     # start_point=7992
     # end_point=23976
 
     #full
-    start_point = 0
-    end_point = 79921
+    # start_point = 0
+    # end_point = 79921
     print('start data',start_point,'end at',end_point,'total trainning set',len(train_dataset))
     train_subset=list(range(start_point,end_point))
     train_subset=torch.utils.data.Subset(train_dataset,train_subset)
 
     train_loader = DataLoader(train_subset, batch_size=batch_size,
                             shuffle=True, num_workers=4,collate_fn=collate_fn)
+
+
+
     val_dataset =VOCDetection(root=data_path, image_set='val',transforms=get_transform(train=True))
     val_loader = DataLoader(val_dataset, batch_size=batch_size,
                             shuffle=False, num_workers=4,collate_fn=collate_fn)
-    print('validation set length', len(val_dataset))
+
+
     trainval_dataset = VOCDetection(root=data_path, image_set='trainval', transforms=get_transform(train=True))
 
-    trainval_loader = DataLoader(trainval_dataset, batch_size=batch_size,
+    start_point = 0
+    end_point = 50
+    print('start data', start_point, 'end at', end_point, 'total val set', len(train_dataset))
+    trainval_subset = list(range(start_point, end_point))
+    trainval_subset = torch.utils.data.Subset(trainval_dataset, trainval_subset)
+
+    trainval_loader = DataLoader(trainval_subset, batch_size=batch_size,
                             shuffle=False, num_workers=4,collate_fn=collate_fn)
     return train_loader,trainval_loader ,val_loader
