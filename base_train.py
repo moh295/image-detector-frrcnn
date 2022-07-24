@@ -31,7 +31,7 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
-        evaluate(model, data_loader_test, device=device)
+        # evaluate(model, data_loader_test, device=device)
     end = timer()
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)
@@ -69,6 +69,6 @@ if __name__ == '__main__':
     train_loader, trainval_loader, val_loader= dataloader(args.batch,args.dataset)
     #trainging ....
 
-    stat_dic=obj_detcetion_training(model,args.epoch,train_loader,val_loader,args.print_freq)
+    stat_dic=obj_detcetion_training(model,args.epoch,train_loader,trainval_loader,args.print_freq)
     print('saving checkpoint to ', args.output)
     torch.save(stat_dic, args.output)
