@@ -102,7 +102,6 @@ def main(args):
     #     print(i)
     #     print(keys[i])
     #     print(checkpoint['model_state_dict'][keys[i]].weight)
-
     # counter = 0
     # with torch.no_grad():
     #     for i in range(len(model.backbone)):
@@ -218,7 +217,6 @@ def main(args):
 
         coco_log(OUT_DIR, stats)
         csv_log(OUT_DIR, stats, epoch)
-
 
 if __name__ == '__main__':
 
