@@ -69,7 +69,7 @@ if __name__ == '__main__':
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
     a.add_argument("--batch",type=int, help="batch size", default=20)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=20)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=3)
     a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
                    default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
