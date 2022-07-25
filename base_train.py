@@ -5,7 +5,7 @@ import torch.optim as optim
 from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
-from base_trainner.engine import train_one_epoch, evaluate
+from base_trainner.engine import train_one_epoch, evaluate ,eval_one_epoch
 import argparse
 import json
 import pickle
@@ -25,23 +25,34 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
                                                    step_size=3,
                                                    gamma=0.1)
-    loss_list=[]
+    train_loss_list=[]
     precision_list=[]
+    test_loss_list=[]
     for epoch in range(num_epochs):
-        _,epoch_loss_list=train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
-        loss_list.append(epoch_loss_list)
+        _, train_epoch_loss=train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
+        train_loss_list.append(train_epoch_loss)
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
-        _,_,precision= evaluate(model, data_loader_test, device=device)
-        precision_list.append(precision)
+
+        _,test_epoch_loss=eval_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
+        test_loss_list.append(test_epoch_loss)
+
+        #coco precision and recall evaluation
+        # _,_,precision= evaluate(model, data_loader_test, device=device)
+        # precision_list.append(precision)
+
+
     end = timer()
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)
-    with open('data/loss_list.pickle', 'wb') as handle:
-        pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('data/precision_list.pickle', 'wb') as handle:
-        pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('data/train_loss_list.pickle', 'wb') as handle:
+        pickle.dump(train_loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open('data/test_loss_list.pickle', 'wb') as handle:
+        pickle.dump(test_loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('data/precision_list.pickle', 'wb') as handle:
+    #     pickle.dump(precision_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return model.state_dict()
 
 if __name__ == '__main__':
@@ -51,7 +62,7 @@ if __name__ == '__main__':
         config = json.load(json_data_file)
     root = config["data root"]
 
-    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_20e.pth'
+    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_test.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
