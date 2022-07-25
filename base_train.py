@@ -8,7 +8,7 @@ from datetime import timedelta
 from base_trainner.engine import train_one_epoch, evaluate
 import argparse
 import json
-
+import pickle
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_freq):
@@ -25,17 +25,24 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
                                                    step_size=3,
                                                    gamma=0.1)
-
+    loss_list=[]
+    precision_list=[]
     for epoch in range(num_epochs):
-        train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
+        _,epoch_loss_list=train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
+        loss_list.append(epoch_loss_list)
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
-        evaluate(model, data_loader_test, device=device)
+        # _,_,precision= evaluate(model, data_loader_test, device=device)
+        # precision_list.append(precision)
     end = timer()
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)
-    return model.state_dict()
+    with open('data/loss_list.pickle', 'wb') as handle:
+        pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('data/precision_list.pickle', 'wb') as handle:
+    #     pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # return model.state_dict()
 
 if __name__ == '__main__':
 
@@ -44,14 +51,14 @@ if __name__ == '__main__':
         config = json.load(json_data_file)
     root = config["data root"]
 
-    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_8e-12e.pth'
+    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_20e.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
-    a.add_argument("--batch",type=int, help="batch size", default=1024)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=12)
+    a.add_argument("--batch",type=int, help="batch size", default=20)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=20)
     a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
                    default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')

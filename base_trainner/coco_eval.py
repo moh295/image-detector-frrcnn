@@ -342,7 +342,10 @@ def evaluate(self):
     self._paramsEval = copy.deepcopy(self.params)
     # toc = time.time()
     # print('DONE (t={:0.2f}s).'.format(toc-tic))
-    return p.imgIds, evalImgs
+
+    persciosn=np.asarray(self.evalImgs).reshape(-1, len(self.params.areaRng), len(self.params.imgIds))
+
+    return p.imgIds, evalImgs ,persciosn
 
 #################################################################
 # end of straight copy from pycocotools, just removing the prints
