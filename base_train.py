@@ -39,8 +39,8 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         test_loss_list.append(test_epoch_loss)
 
         #coco precision and recall evaluation
-        # _,_,precision= evaluate(model, data_loader_test, device=device)
-        # precision_list.append(precision)
+        _,_,precision= evaluate(model, data_loader_test, device=device)
+        precision_list.append(precision)
 
 
     end = timer()
@@ -51,8 +51,8 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
     with open('data/test_loss_list.pickle', 'wb') as handle:
         pickle.dump(test_loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # with open('data/precision_list.pickle', 'wb') as handle:
-    #     pickle.dump(precision_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('data/precision_list.pickle', 'wb') as handle:
+        pickle.dump(precision_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return model.state_dict()
 
 if __name__ == '__main__':
