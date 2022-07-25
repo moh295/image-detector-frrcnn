@@ -33,16 +33,16 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset
-        # _,_,precision= evaluate(model, data_loader_test, device=device)
-        # precision_list.append(precision)
+        _,_,precision= evaluate(model, data_loader_test, device=device)
+        precision_list.append(precision)
     end = timer()
     elapsed = timedelta(seconds=end - start)
     print('Finished Training....duration :', elapsed)
     with open('data/loss_list.pickle', 'wb') as handle:
         pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # with open('data/precision_list.pickle', 'wb') as handle:
-    #     pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # return model.state_dict()
+    with open('data/precision_list.pickle', 'wb') as handle:
+        pickle.dump(loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    return model.state_dict()
 
 if __name__ == '__main__':
 
