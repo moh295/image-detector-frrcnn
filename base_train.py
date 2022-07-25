@@ -35,7 +35,7 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         lr_scheduler.step()
         # evaluate on the test dataset
 
-        _,test_epoch_loss=eval_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=print_freq)
+        _,test_epoch_loss=eval_one_epoch(model, optimizer, data_loader_test, device, epoch, print_freq=print_freq)
         test_loss_list.append(test_epoch_loss)
 
         #coco precision and recall evaluation
