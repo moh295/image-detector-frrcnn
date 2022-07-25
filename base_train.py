@@ -39,8 +39,8 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
         test_loss_list.append(test_epoch_loss)
 
         #coco precision and recall evaluation
-        _,_,precision= evaluate(model, data_loader_test, device=device)
-        precision_list.append(precision)
+        evaluate(model, data_loader_test, device=device)
+
 
 
     end = timer()
@@ -51,8 +51,8 @@ def obj_detcetion_training(model,num_epochs,data_loader,data_loader_test,print_f
 
     with open('data/test_loss_list.pickle', 'wb') as handle:
         pickle.dump(test_loss_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('data/precision_list.pickle', 'wb') as handle:
-        pickle.dump(precision_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('data/precision_list.pickle', 'wb') as handle:
+    #     pickle.dump(precision_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return model.state_dict()
 
 if __name__ == '__main__':
@@ -62,15 +62,15 @@ if __name__ == '__main__':
         config = json.load(json_data_file)
     root = config["data root"]
 
-    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_test.pth'
+    new_checkpoint = root+'retrain_fasterrcnn_80k_4c_12e.pth'
     a = argparse.ArgumentParser()
     a.add_argument("--checkpoint", type=str,help="the weight dirctory for the trained model",
                    default=False)
     a.add_argument("--output",type=str, help="new checkpoint file", default=new_checkpoint)
 
-    a.add_argument("--batch",type=int, help="batch size", default=20)
-    a.add_argument("--epoch", type=int, help="number of epoch", default=3)
-    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=50)
+    a.add_argument("--batch",type=int, help="batch size", default=30)
+    a.add_argument("--epoch", type=int, help="number of epoch", default=12)
+    a.add_argument("--print_freq", type=int, help="printing training status frequency", default=100)
     a.add_argument("--dataset",type=str, help="PSCAL VOC2007 format folder",
                    default=root+'pascal_voc_format/VOCdevkit2007_handobj_100K/VOC2007')
     args = a.parse_args()

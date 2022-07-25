@@ -343,9 +343,9 @@ def evaluate(self):
     # toc = time.time()
     # print('DONE (t={:0.2f}s).'.format(toc-tic))
 
-    persciosn=np.asarray(self.evalImgs).reshape(-1, len(self.params.areaRng), len(self.params.imgIds))
 
-    return p.imgIds, evalImgs ,persciosn
+
+    return p.imgIds, evalImgs
 
 #################################################################
 # end of straight copy from pycocotools, just removing the prints
