@@ -51,7 +51,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
 
 
 def eval_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
-    model.eval()
+    model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'test: [{}]'.format(epoch)
