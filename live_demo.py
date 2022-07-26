@@ -4,7 +4,7 @@ import cv2
 from utils import image_resize
 import json
 from frRCNN import FrRCNN
-
+from tracker import Grasp_tracker
 
 if __name__ == '__main__':
     file = 'config.json'
@@ -33,6 +33,7 @@ if __name__ == '__main__':
     image_list = []
     tensor_list=[]
     image_batch=[]
+    grasp_tracker=Grasp_tracker()
 
     count=1
     while True:
@@ -51,7 +52,7 @@ if __name__ == '__main__':
         tensor_list.append(tensor)
         image_batch.append(image)
         if len(tensor_list)==args.batch :
-            model.predict(args.output, tensors=tensor_list, images=image_batch, show_vid=True,output_scale=args.output_scale)
+            model.predict(args.output, tensors=tensor_list, images=image_batch, show_vid=True,output_scale=args.output_scale,tracker=grasp_tracker)
             count+=args.batch
             tensor_list = []
             image_batch=[]

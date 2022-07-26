@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-
 import torchvision.transforms as T
+from tracker import Grasp_tracker
 # Dictionary containing some colors
 colors = {'blue': (0, 0, 255), 'green': (0, 255, 0), 'red': (255, 0, 0), 'orange': (223, 70, 14),
           'yellow': (255, 255, 0),
@@ -379,7 +379,7 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
     return numpy_image
 
-def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
+def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_tracker=False):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
     peson_prob_thresh=0.01
@@ -405,14 +405,22 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale):
     #object
     o_boxes=boxes[classes==3]
     o_scores=scores[classes==3]
-    o_kept = my_nms(o_boxes, o_scores)
-    o_boxes = o_boxes[o_kept]
-    o_scores = o_scores[o_kept]
-
-    #preson list
+    # preson list
     p_boxes = boxes[classes == 4]
     p_scores = scores[classes == 4]
-    p_kept = my_nms(p_boxes, p_scores)
+
+    #filtring box with overframe tracking
+    if grasp_tracker:
+        o_kept= grasp_tracker.track(h_boxes,o_boxes,o_scores)
+        p_kept = grasp_tracker.track(h_boxes,p_boxes,p_scores)
+
+    else:
+        o_kept = my_nms(o_boxes, o_scores)
+        p_kept = my_nms(p_boxes, p_scores)
+
+   #boxes after filtring
+    o_boxes = o_boxes[o_kept]
+    o_scores = o_scores[o_kept]
     p_boxes = p_boxes[p_kept]
     p_scores = p_scores[p_kept]
 

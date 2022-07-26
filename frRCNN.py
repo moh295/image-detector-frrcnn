@@ -22,7 +22,7 @@ class FrRCNN:
                 save_dir,
                 tensors, images, count=1,
                 save=False, show=False,
-                show_vid=False, save_vid=False,output_scale=1):
+                show_vid=False, save_vid=False,output_scale=1,tracker=False):
 
 
         cnt = count
@@ -48,7 +48,7 @@ class FrRCNN:
             draw = np.copy(image_resize(image,output_scale))
 
             #draw=annutaion_13_classes(draw,detection_bboxes,detection_classes,detection_probs,output_scale)
-            draw = annutaion_4_classes(draw, detection_bboxes, detection_classes, detection_probs, output_scale)
+            draw = annutaion_4_classes(draw, detection_bboxes, detection_classes, detection_probs, output_scale,tracker)
             # draw = annutaion_2_classes(draw, detection_bboxes, detection_classes, detection_probs, output_scale)
 
 

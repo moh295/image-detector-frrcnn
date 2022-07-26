@@ -5,6 +5,7 @@ import cv2
 from utils import image_resize
 import json
 from frRCNN import FrRCNN
+from tracker import Grasp_tracker
 if __name__ == '__main__':
     file='config.json'
     with open(file) as json_data_file:
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     image_list = []
     tensor_list=[]
     image_batch=[]
+    grasp_tracker=Grasp_tracker()
     count = 1
     success = True
     init_vid=True
@@ -56,13 +58,13 @@ if __name__ == '__main__':
 
 
         if len(tensor_list)==args.batch:
-            frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,images=image_batch,output_scale=args.output_scale)
+            frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
 
             count+=args.batch
             tensor_list = []
             image_batch=[]
     #check if there is still images in the list in case the previous loop break befor len(tensor_list)==args.batch
     if len(tensor_list):
-        model.predict(args.output, tensors=tensor_list, save_vid=True, count=count, images=image_batch,output_scale=args.output_scale)
+        model.predict(args.output, tensors=tensor_list, save_vid=True, count=count, images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
 
     model.realse_vid()
