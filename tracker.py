@@ -178,5 +178,4 @@ class Grasp_tracker:
                     #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
 
-        print('recored len',len(self.record))
         return keep_obj

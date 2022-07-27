@@ -12,11 +12,8 @@ def re_labeling_13c(target):
     objects_temp_inf = False
 
     num_of_ojb=0
-    # print('filename',target['annotation']['filename'])
     for lb in target['annotation']['object']:
         num_of_ojb+= 1
-        # print('obj',num_of_ojb)
-
         # starting with hands annotations
         # extract some target object annotations from the hand annotations e.g (person, portable object
         if lb['name'] == 'hand':
@@ -83,7 +80,6 @@ def re_labeling_13c(target):
             is_obj_contact_L= int(lb['contactleft'])==1
             is_obj_contact_R= int(lb['contactright'])==1
             is_obj_contact_LR= is_obj_contact_L and is_obj_contact_R
-            # print('is_obj_contact_L',is_obj_contact_L,'is_obj_contact_R',is_obj_contact_R,'is_obj_contact_LR',is_obj_contact_LR)
             # in case object in contact with both hands label with one of the following : portable_LR , non-portable_LR ,person_LR
             if is_obj_contact_LR:
                 for inx in range(len(hands_temp_info)):
@@ -130,7 +126,7 @@ def re_labeling_13c(target):
                             max_overalp_at = inx
                 _, _, objec_on_hand = hands_temp_info[max_overalp_at]
                 labels.append(objec_on_hand)
-            # print('max_overalp_at', max_overalp_at, hands_temp_info)
+
 
 
     return boxes, labels
@@ -304,7 +300,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
     peson_prob_thresh=0.3
     obj_prob_thresh = 0.1
-    hand_prob_thresh = 0.49
+    hand_prob_thresh = 0.51
     # obj acceptable_size will be hand_max * max_size_ratio
     max_size_ratio= 10
     kept_indices = scores > peson_prob_thresh
@@ -376,22 +372,22 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
     #draw tracked hand-obj
     if grasp_tracker:
         for track in grasp_tracker.record:
-            if track.nb_trk_frame>1 and track.last_seen <2:
-                category='trk #'+ str(track.nb_trk_frame)+'- s'+str(track.last_seen)
-                bbox = np.array(track.hand_bbx) * output_scale
-                bbox = bbox.astype(int)
-                # print('last seen','tracked record',track.last_seen,track.nb_trk_frame)
-                color_intensity = int(200 - 200 * track.hand_score)
-                color=(color_intensity, 255, color_intensity)
-                cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-                cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
-                #tracked obj
-                color_intensity = int(200 - 200 * track.obj_score)
-                color=(color_intensity, color_intensity, 255)
-                bbox = np.array(track.obj_bbx) * output_scale
-                bbox = bbox.astype(int)
-                cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-                cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
+
+            category='trk #'+ str(track.nb_trk_frame)+'- s'+str(track.last_seen)
+            bbox = np.array(track.hand_bbx) * output_scale
+            bbox = bbox.astype(int)
+            color_intensity = int(200 - 200 * track.hand_score)
+            color=(color_intensity, 255, color_intensity) if track.nb_trk_frame>2 and track.last_seen <2 else (255, 255, 255)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
+
+            #tracked obj
+            color_intensity = int(200 - 200 * track.obj_score)
+            color=(color_intensity, color_intensity, 255) if track.nb_trk_frame>2 and track.last_seen <2 else (255, 255, 255)
+            bbox = np.array(track.obj_bbx) * output_scale
+            bbox = bbox.astype(int)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
 
 
     # for bbox , prob in zip(p_boxes,p_scores):
