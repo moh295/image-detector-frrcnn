@@ -304,7 +304,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
     peson_prob_thresh=0.3
     obj_prob_thresh = 0.1
-    hand_prob_thresh = 0.4
+    hand_prob_thresh = 0.49
     # obj acceptable_size will be hand_max * max_size_ratio
     max_size_ratio= 10
 
