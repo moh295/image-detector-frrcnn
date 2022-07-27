@@ -150,7 +150,7 @@ class Grasp_tracker:
             temp=[]
             for idx in hand_idx:
                 if idx!=-1:
-                    temp.append(self.record[hand_idx])
+                    temp.append(self.record[idx])
 
             self.record=temp
             #
