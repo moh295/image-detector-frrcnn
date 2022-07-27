@@ -58,7 +58,7 @@ if __name__ == '__main__':
     number_of_frames=int(images.totalFrames)
     print('number of frame',number_of_frames)
     for i in  range(number_of_frames):
-        print(f'processing frame {i} / {number_of_frames} -- batch {int(i/(number_of_frames/args.batch))}/{int(number_of_frames/args.batch)}')
+        print(f'processing frame {i} / {number_of_frames} -- batches {int(i/(number_of_frames/args.batch))}/{int(number_of_frames/args.batch)}')
         if i%args.skip==0 and images[i] is not None:
             image=image_resize(images[i],args.input_scale)
             image_list.append(image)

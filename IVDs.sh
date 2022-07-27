@@ -57,11 +57,15 @@ python3 inference_mp4_video.py --video data/ho3.mp4 --output data/output_ho3_13c
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 1 --output_scale 1 --fps 60
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_trained_fasterrcnn_100p.pth --input_scale 0.3 --output_scale 1
 
-python3 inference_mp4_video.py   --output data/lazyCopy/base_4c.mp4;
-python3 inference_mp4_video.py  --video data//ho3.mp4 --input_scale 1.2 --output_scale 2.5 --output data/lazyCopy/ho3_4c_120-250.mp4 ;
-python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/lazyCopy/ho2_4c_600-200.mp4;
-python3 inference_mp4_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/lazyCopy/ho3.3_4c.mp4;
-python3 inference_mp4_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1 --output data/lazyCopy/ho4_1x1_4c.mp4
+
+
+python3 inference_video.py --output data/lazyCopy/base_4c.mp4;
+python3 inference_video.py --video data//ho3.mp4 --input_scale 1.2 --output_scale 2.5 --output data/lazyCopy/ho3_4c_120-250.mp4 ;
+python3 inference_video.py --video data/ho2.mp4 --output data/lazyCopy/ho2_4c_600-200.mp4;
+python3 inference_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/lazyCopy/ho3.3_4c.mp4;
+python3 inference_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1 --output data/lazyCopy/ho4_1x1_4c.mp4
+
+
 
 
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy /mnt/c/Users/mom44/Documents/clearimageai
