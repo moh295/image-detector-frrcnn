@@ -94,7 +94,7 @@ class Grasp_tracker:
                     # if boxes overlap iou>0.5
                     if overlap(o_boxes[box1], o_boxes[box2]) > 0:
                         # chose the one with minmum iou_diff and not very lower ins score tho
-                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 6:
+                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(box1)*2>box_size(box2):
                             keep_obj[box1] = False
                         else:
                             keep_obj[box2] = False
@@ -146,26 +146,11 @@ class Grasp_tracker:
 
 
             #remove h-o which lost track for more than "last_seen_thr" frames
-            no_track=[True]*len(self.record)
             temp=[]
             for idx in hand_idx:
                 if idx!=-1:
                     temp.append(self.record[idx])
-
             self.record=temp
-            #
-            #
-            # remvoe_list=[]
-            # for i in range(len(self.record)):
-            #     if no_track[i]:
-            #         self.record[i].last_seen+=1
-            #         if self.record[i].last_seen > self.last_seen_thr:
-            #             remvoe_list.append(i)
-            #
-            # for i in remvoe_list:
-            #     self.remove(i)
-
-
 
         return keep_obj
 

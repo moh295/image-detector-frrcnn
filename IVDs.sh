@@ -61,10 +61,9 @@ python3 inference_mp4_video.py   --output data/base_4c.mp4;
 python3 inference_mp4_video.py  --video data/ho3.mp4 --input_scale 1.2 --output_scale 2.5 --output data/ho3_4c_120-250.mp4 ;
 python3 inference_mp4_video.py  --video data/ho2.mp4 --output data/ho2_4c_600-200.mp4;
 python3 inference_mp4_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/ho3.3_4c.mp4;
-python3 inference_mp4_video.py --video data/ho4.mp4 --output_scale 1 input_scale 1 --output data/ho4_1x1_4c.mp4
+python3 inference_mp4_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1 --output data/ho4_1x1_4c.mp4
 
-scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/base_4c.mp4 base_4c.mp4
-
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3_4c_120-250.mp4 4ho3_4c_120-250.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho2_4c_600-200.mp4 ho2_4c_600-200.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3_4c_120-250.mp4 ho3_4c_120-250.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3.3_4c.mp4 ho3.3_4c.mp4
