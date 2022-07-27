@@ -331,14 +331,11 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
 
     #filtring box with overframe tracking
     if grasp_tracker:
-        o_kept= grasp_tracker.track(h_boxes,o_boxes,o_scores)
-        # p_kept = grasp_tracker.track(h_boxes,p_boxes,p_scores)
-
-
+        o_kept= grasp_tracker.track(h_boxes,h_scores,o_boxes,o_scores)
 
     else:
         o_kept = my_nms(o_boxes, o_scores)
-        # p_kept = my_nms(p_boxes, p_scores)
+
 
    #boxes after filtring
 
@@ -347,13 +344,13 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
     # p_boxes = p_boxes[p_kept]
     # p_scores = p_scores[p_kept]
 
+    #anutate non tracked hands
     for bbox, cls, prob in zip(h_boxes,h_cls,h_scores):
         bbox = np.array(bbox) * output_scale
         bbox = bbox.astype(int)
         category = list(labels_dict.keys())[cls - 1]
         color_intensity = int(200 - 200 * prob)
-        Free_hand = cls ==1
-        color = (225, color_intensity, color_intensity) if Free_hand else (color_intensity, 255, color_intensity)
+        color = (225, color_intensity, color_intensity)
         if  prob > hand_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
@@ -374,14 +371,25 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
-    for track in grasp_tracker.record:
-        category='tracked hand'
-        bbox = np.array(track.hand_bbx) * output_scale
-        bbox = bbox.astype(int)
-        # print('last seen','tracked record',track.last_seen,track.nb_trk_frame)
-        color=(0,0,0)
-        cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-        cv2.putText(numpy_image, f'{category:s} ', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+    if grasp_tracker:
+        for track in grasp_tracker.record:
+            category='tracked'+ str(track.nb_trk_frame)
+            bbox = np.array(track.hand_bbx) * output_scale
+            bbox = bbox.astype(int)
+            # print('last seen','tracked record',track.last_seen,track.nb_trk_frame)
+            color_intensity = int(200 - 200 * track.hand_score)
+            color=(color_intensity, 255, color_intensity)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
+
+
+            #tracked obj
+            color_intensity = int(200 - 200 * track.obj_score)
+            color=(color_intensity, color_intensity, 255)
+            bbox = np.array(track.obj_bbx) * output_scale
+            bbox = bbox.astype(int)
+            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+            cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
 
 
     # for bbox , prob in zip(p_boxes,p_scores):

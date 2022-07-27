@@ -2,10 +2,12 @@ from utils import *
 
 
 class Grasp:
-    def __init__(self,hand_bbx,obj_bbx):
+    def __init__(self,hand_bbx,hand_score,obj_bbx,obj_score):
         self.hand_bbx=hand_bbx
         self.obj_bbx=obj_bbx
         self.last_seen=0
+        self.hand_score=hand_score
+        self.obj_score=obj_score
         x=int((hand_bbx[2] - hand_bbx[0])/2)
         y=int((hand_bbx[3] - hand_bbx[1])/2)
         self.picked_point=[x,y]
@@ -17,12 +19,14 @@ class Grasp_tracker:
     def __init__(self):
         self.record=[]
         self.last_seen_thr=10
-    def add(self,hand_bbx,obj_bbx):
-        obj=Grasp(hand_bbx,obj_bbx)
+    def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
+        obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
-    def update(self,idx,hand_bbx,obj_bbx):
+    def update(self,idx,hand_bbx,hand_score,obj_bbx,obj_score):
         self.record[idx].hand_bbx=hand_bbx
         self.record[idx].obj_bbx=obj_bbx
+        self.record[idx].hand_score=hand_score
+        self.record[idx].obj_score=obj_score
         self.record[idx].nb_trk_frame+=1
         self.record[idx].last_seen=0
 
@@ -63,8 +67,6 @@ class Grasp_tracker:
 
 
     def find_iou_diff(self,h_boxes ,tracked_hand_idx, h1_h2_iou,o_boxes):
-
-
         iou_opt_list = [1] * len(o_boxes)
         hand_on_obj_idx = [-1] * len(o_boxes)
         for i in range(len(o_boxes)):
@@ -103,7 +105,7 @@ class Grasp_tracker:
                 if keep_obj[box1] and keep_obj[box2]:
                     # if boxes overlap iou>0.5
                     if overlap(o_boxes[box1], o_boxes[box2]) > 0:
-                        # chose the one with minmum iou_diff and not very lower ins score tho
+                        # chose the one with minimum iou_diff and not very lower ins score tho
                         if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(o_boxes[box1])*2>box_size(o_boxes[box2]):
                             keep_obj[box1] = False
                         else:
@@ -111,7 +113,7 @@ class Grasp_tracker:
 
         return keep_obj
 
-    def track(self, h_boxes,o_boxes,o_scores):
+    def track(self, h_boxes,h_scores,o_boxes,o_scores):
         # if len(h_boxes)==0 or len(o_boxes)==0:return False
         tracked_hand_idx, h1_h2_iou = self.hand_track(h_boxes)
         record_size=len(self.record)
@@ -119,6 +121,8 @@ class Grasp_tracker:
         if not record_size:
             #remove overlp object based on min size and score
             keep_obj= my_nms(o_boxes,o_scores)
+            o_boxes=o_boxes[keep_obj]
+            o_scores=o_scores[keep_obj]
             #find hand object overalp
             # tracked_hand_idx=[-1]*len(h_boxes)
             _, hand_on_obj_idx = self.find_iou_diff(h_boxes, tracked_hand_idx, None, o_boxes)
@@ -126,7 +130,8 @@ class Grasp_tracker:
             #adding new grasp (hand graping an object) to the list
             for i in range(len(o_boxes)):
                 if hand_on_obj_idx[i] !=-1:
-                    self.add(h_boxes[hand_on_obj_idx[i]], o_boxes[i])
+                    idx=hand_on_obj_idx[i]
+                    self.add(h_boxes[idx],h_scores[idx], o_boxes[i],o_scores[i])
 
 
         #if there is some recored
@@ -137,13 +142,14 @@ class Grasp_tracker:
             iou_opt_list, hand_on_obj_idx =self.find_iou_diff( h_boxes,tracked_hand_idx, h1_h2_iou,o_boxes)
             keep_obj=self.remvoe_overlap_with_iou_opt(o_boxes,hand_on_obj_idx,iou_opt_list,o_scores)
             o_boxes=o_boxes[keep_obj]
+            o_scores=o_scores[keep_obj]
 
             for i in range(len(tracked_hand_idx)):
                 #if hand-obj was tracked update the record
                 if tracked_hand_idx[i] !=-1:
                     for j in range(len(o_boxes)):
                         if hand_on_obj_idx[j]== i:
-                            self.update(tracked_hand_idx[i],h_boxes[i],o_boxes[j])
+                            self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
             # hand-obj detected for the first time
             #update then add otherwise tracked_hand_idx will loss track
@@ -151,7 +157,7 @@ class Grasp_tracker:
                 if tracked_hand_idx[i] == -1:
                     for j in range(len(o_boxes)):
                         if hand_on_obj_idx[j]== i:
-                            self.add(h_boxes[i],o_boxes[j])
+                            self.add(h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
         #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
