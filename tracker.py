@@ -18,7 +18,7 @@ class Grasp_tracker:
         self.record=[]
         self.last_seen_thr=4
         self.iou_obj_thr=0.1
-        self.ho_iou_thr=0.1
+        self.ho_iou_thr=0.01
         self.h_iou_over_frames=0.1
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
@@ -104,16 +104,15 @@ class Grasp_tracker:
             for box2 in range(box1 + 1, len(o_boxes)):
                 # to speed up don't compare with the removed ones
                 if keep_obj[box1] and keep_obj[box2]:
-                    # if boxes overlap iou>0.5
-                    if overlap(o_boxes[box1], o_boxes[box2]) > self.iou_obj_thr:
+                    # if boxes two boxes overlap and they belong to the same hands
+
+                    if overlap(o_boxes[box1], o_boxes[box2]) > self.iou_obj_thr and hand_on_obj_idx[box1]==hand_on_obj_idx[box2]:
                         # chose the one with minimum iou_diff and not very lower ins score tho
                         if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(o_boxes[box1])*1.5>box_size(o_boxes[box2]):
                             keep_obj[box1] = False
                         else:
                             keep_obj[box2] = False
-
         return keep_obj
-
     def track(self, h_boxes,h_scores,o_boxes,o_scores):
         # if len(h_boxes)==0 or len(o_boxes)==0:return False
         tracked_hand_idx, h1_h2_iou = self.hand_track(h_boxes)
@@ -134,10 +133,8 @@ class Grasp_tracker:
                     idx=hand_on_obj_idx[i]
                     self.add(h_boxes[idx],h_scores[idx], o_boxes[i],o_scores[i])
 
-
         #if there is some recored
         else:
-
 
             # print('step 1',hand_idx,h1_h2_iou)
             iou_opt_list, hand_on_obj_idx =self.find_iou_diff( h_boxes,tracked_hand_idx, h1_h2_iou,o_boxes)
@@ -154,6 +151,7 @@ class Grasp_tracker:
                             self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
             # hand-obj detected for the first time add them to the list
+            print(len(tracked_hand_idx),len(o_boxes),print(tracked_hand_idx))
             for i in range(len(tracked_hand_idx)):
                 if tracked_hand_idx[i] == -1:
                     for j in range(len(o_boxes)):
