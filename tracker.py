@@ -147,19 +147,24 @@ class Grasp_tracker:
 
             #remove h-o which lost track for more than "last_seen_thr" frames
             no_track=[True]*len(self.record)
+            temp=[]
             for idx in hand_idx:
-                if idx!=-1: no_track[idx]=False
+                if idx!=-1:
+                    temp.append(self.record[hand_idx])
 
-            remvoe_list=[]
-            for i in range(len(self.record)):
-                if no_track[i]:
-                    self.record[i].last_seen+=1
-                    if self.record[i].last_seen > self.last_seen_thr:
-                        remvoe_list.append(i)
+            self.record=temp
+            #
+            #
+            # remvoe_list=[]
+            # for i in range(len(self.record)):
+            #     if no_track[i]:
+            #         self.record[i].last_seen+=1
+            #         if self.record[i].last_seen > self.last_seen_thr:
+            #             remvoe_list.append(i)
+            #
+            # for i in remvoe_list:
+            #     self.remove(i)
 
-            for i in remvoe_list:
-                self.remove(i)
-                print(f'recored{i} was removed ')
 
 
         return keep_obj
