@@ -373,7 +373,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
 
     if grasp_tracker:
         for track in grasp_tracker.record:
-            category='tracked'+ str(track.nb_trk_frame)
+            category='trk #'+ str(track.nb_trk_frame)+'- s'+str(track.last_seen)
             bbox = np.array(track.hand_bbx) * output_scale
             bbox = bbox.astype(int)
             # print('last seen','tracked record',track.last_seen,track.nb_trk_frame)

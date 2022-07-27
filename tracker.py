@@ -152,14 +152,29 @@ class Grasp_tracker:
                         if hand_on_obj_idx[j]== i:
                             self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
-            # hand-obj detected for the first time
+            # hand-obj detected for the first time add them to the list
             for i in range(len(tracked_hand_idx)):
                 if tracked_hand_idx[i] == -1:
                     for j in range(len(o_boxes)):
                         if hand_on_obj_idx[j]== i:
+
                             self.add(h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
-        #remove h-o which lost track for more than "last_seen_thr" frames
+                #if hand is empty clean its tracked_hand_idx
+                else:
+                    has_and_obj = False
+                    for j in range(len(o_boxes)):
+                        if hand_on_obj_idx[j] == i:
+                            has_and_obj = True
+                    if not has_and_obj:
+                        tracked_hand_idx[i]=-1
+
+
+
+
+
+
+                    #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
 
         # print('recored len',len(self.record))
