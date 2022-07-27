@@ -143,6 +143,7 @@ class Grasp_tracker:
             keep_obj=self.remvoe_overlap_with_iou_opt(o_boxes,hand_on_obj_idx,iou_opt_list,o_scores)
             o_boxes=o_boxes[keep_obj]
             o_scores=o_scores[keep_obj]
+            hand_on_obj_idx=np.array(hand_on_obj_idx)[keep_obj]
 
             for i in range(len(tracked_hand_idx)):
                 #if hand-obj was tracked update the record
@@ -152,7 +153,6 @@ class Grasp_tracker:
                             self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
             # hand-obj detected for the first time
-            #update then add otherwise tracked_hand_idx will loss track
             for i in range(len(tracked_hand_idx)):
                 if tracked_hand_idx[i] == -1:
                     for j in range(len(o_boxes)):
@@ -162,10 +162,10 @@ class Grasp_tracker:
         #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
 
-        print('recored len',len(self.record))
-        print('tracked_hand_idx',tracked_hand_idx)
-        for r, i in zip(self.record,range(len(self.record))):
-            print('item',i,'seen',r.last_seen,'box',r.hand_bbx,r.obj_bbx)
+        # print('recored len',len(self.record))
+        # print('tracked_hand_idx',tracked_hand_idx)
+        # for r, i in zip(self.record,range(len(self.record))):
+        #     print('item',i,'seen',r.last_seen,'box',r.hand_bbx,r.obj_bbx)
 
         return keep_obj
 
