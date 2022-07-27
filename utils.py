@@ -102,6 +102,7 @@ def my_nms(boxes,scores):
 
 def box_size(box):
 
+
     width = box[2] - box[0]
     hight = box[3] - box[1]
     return width * hight

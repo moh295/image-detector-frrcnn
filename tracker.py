@@ -94,7 +94,7 @@ class Grasp_tracker:
                     # if boxes overlap iou>0.5
                     if overlap(o_boxes[box1], o_boxes[box2]) > 0:
                         # chose the one with minmum iou_diff and not very lower ins score tho
-                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(box1)*2>box_size(box2):
+                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(o_boxes[box1])*2>box_size(o_boxes[box2]):
                             keep_obj[box1] = False
                         else:
                             keep_obj[box2] = False
