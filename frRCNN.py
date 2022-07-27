@@ -2,7 +2,7 @@ import torch
 from torchvision import models
 from timeit import default_timer as timer
 from datetime import timedelta
-from utils import *
+from annutaion import *
 class FrRCNN:
     def __init__(self,checkpoint='data/torch_trained_fasterrcnn_100p.pth'):
         # self.labels_dict = ['targetobject', 'hand']
@@ -36,7 +36,7 @@ class FrRCNN:
         predictions = self.model(tensors)
         end = timer()
         elapsed = timedelta(seconds=end - start_pred)
-        print(f'prediction takes {elapsed}')
+        # print(f'prediction takes {elapsed}')
         path_to_output_image = save_dir
 
         for data, image in zip(predictions, images):
@@ -68,7 +68,7 @@ class FrRCNN:
 
         end = timer()
         elapsed = timedelta(seconds=end - start)
-        print(f'full prediction process takes {elapsed} [+ annotation ,saving..]')
+        # print(f'full prediction process takes {elapsed} [+ annotation ,saving..]')
 
     def create_video(self, width, height, fps, output):
         # Define the codec and create VideoWriter object

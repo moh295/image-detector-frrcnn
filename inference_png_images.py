@@ -5,6 +5,7 @@ import cv2
 from utils import image_resize
 import json
 from frRCNN import FrRCNN
+from tracker import Grasp_tracker
 if __name__ == '__main__':
     file='config.json'
     with open(file) as json_data_file:
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     image_list = []
     tensor_list=[]
     image_batch=[]
+    grasp_traker=Grasp_tracker()
     print('loadin images form path[', imdir,'].....')
     ext = ['png', 'jpg', 'gif']  # Add image formats here
     files = []
@@ -43,7 +45,7 @@ if __name__ == '__main__':
         image_batch.append(image)
         if len(tensor_list)==args.batch or i ==len(image_list):
             # inference_and_save_mobilnet_full_data(model, args.output,image_batch,tensor_list,count, labels_dict)
-            model.predict(args.output, tensors=tensor_list,save=True,count=count,images=image_batch)
+            model.predict(args.output, tensors=tensor_list,save=True,count=count,images=image_batch,tracker=grasp_traker)
             count+=args.batch
             tensor_list = []
             image_batch=[]
