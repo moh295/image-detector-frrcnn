@@ -69,5 +69,6 @@ scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho2_4c_600
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3_4c_120-250.mp4 ho3_4c_120-250.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho3.3_4c.mp4 ho3.3_4c.mp4
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/ho4_1x1_4c.mp4 ho4_1x1_4c.mp4
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy /mnt/c/Users/mom44/Documents/clearimageai
 
 python3 base_train.py --checkpoint data/retrain_fasterrcnn_80k_4c.pth

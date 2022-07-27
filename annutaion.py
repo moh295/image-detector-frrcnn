@@ -332,20 +332,20 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
     #filtring box with overframe tracking
     if grasp_tracker:
         o_kept= grasp_tracker.track(h_boxes,o_boxes,o_scores)
-        p_kept = grasp_tracker.track(h_boxes,p_boxes,p_scores)
+        # p_kept = grasp_tracker.track(h_boxes,p_boxes,p_scores)
 
 
 
     else:
         o_kept = my_nms(o_boxes, o_scores)
-        p_kept = my_nms(p_boxes, p_scores)
+        # p_kept = my_nms(p_boxes, p_scores)
 
    #boxes after filtring
 
     o_boxes = o_boxes[o_kept]
     o_scores = o_scores[o_kept]
-    p_boxes = p_boxes[p_kept]
-    p_scores = p_scores[p_kept]
+    # p_boxes = p_boxes[p_kept]
+    # p_scores = p_scores[p_kept]
 
     for bbox, cls, prob in zip(h_boxes,h_cls,h_scores):
         bbox = np.array(bbox) * output_scale
@@ -374,13 +374,23 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
-    for bbox , prob in zip(p_boxes,p_scores):
-        category = 'person'
-        bbox = np.array(bbox) * output_scale
+    for track in grasp_tracker.record:
+        category='tracked hand'
+        bbox = np.array(track.hand_bbx) * output_scale
         bbox = bbox.astype(int)
-        color_intensity = int(200 - 200 * prob)
-        color = (color_intensity, 255, 255)
-        if prob > peson_prob_thresh:
-            cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+        # print('last seen','tracked record',track.last_seen,track.nb_trk_frame)
+        color=(0,0,0)
+        cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+        cv2.putText(numpy_image, f'{category:s} ', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+
+
+    # for bbox , prob in zip(p_boxes,p_scores):
+    #     category = 'person'
+    #     bbox = np.array(bbox) * output_scale
+    #     bbox = bbox.astype(int)
+    #     color_intensity = int(200 - 200 * prob)
+    #     color = (color_intensity, 255, 255)
+    #     if prob > peson_prob_thresh:
+    #         cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+    #         cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
     return numpy_image
