@@ -302,9 +302,9 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_tracker=False):
 
     labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
-    peson_prob_thresh=0.01
+    peson_prob_thresh=0.3
     obj_prob_thresh = 0.1
-    hand_prob_thresh = 0.25
+    hand_prob_thresh = 0.4
     # obj acceptable_size will be hand_max * max_size_ratio
     max_size_ratio= 10
 
