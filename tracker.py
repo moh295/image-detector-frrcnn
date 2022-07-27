@@ -1,6 +1,5 @@
 from utils import *
 
-
 class Grasp:
     def __init__(self,hand_bbx,hand_score,obj_bbx,obj_score):
         self.hand_bbx=hand_bbx
@@ -14,14 +13,13 @@ class Grasp:
         self.picked_hand_size=box_size(hand_bbx)
         self.nb_trk_frame = 0
 
-
 class Grasp_tracker:
     def __init__(self):
         self.record=[]
         self.last_seen_thr=4
-        self.iou_obj_thr=0.2
+        self.iou_obj_thr=0.1
         self.ho_iou_thr=0.1
-        self.h_iou_over_frames=0.25
+        self.h_iou_over_frames=0.1
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
@@ -172,11 +170,6 @@ class Grasp_tracker:
                     if not has_and_obj:
                         tracked_hand_idx[i]=-1
 
-
-
-
-
-
                     #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
 
@@ -186,10 +179,3 @@ class Grasp_tracker:
         #     print('item',i,'seen',r.last_seen,'box',r.hand_bbx,r.obj_bbx)
 
         return keep_obj
-
-
-
-
-
-
-
