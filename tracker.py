@@ -18,7 +18,10 @@ class Grasp:
 class Grasp_tracker:
     def __init__(self):
         self.record=[]
-        self.last_seen_thr=10
+        self.last_seen_thr=4
+        self.iou_obj_thr=0.2
+        self.ho_iou_thr=0.1
+        self.h_iou_over_frames=0.25
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
@@ -55,7 +58,7 @@ class Grasp_tracker:
         for i in range(len(h_bbox)):
             for j in range(len(self.record)):
                 iou=overlap(h_bbox[i],self.record[j].hand_bbx)
-                if iou >0 and iou>max_iou :
+                if iou >self.h_iou_over_frames and iou>max_iou :
                     iou_found=True
                     max_iou=iou
                     max_iou_at=j
@@ -77,7 +80,7 @@ class Grasp_tracker:
             for j in range(len(h_boxes)):
                 # check if obj overlap with hand
                 iou = overlap(h_boxes[j], o_boxes[i])
-                if iou > 0 and iou>max_iou:
+                if iou > self.ho_iou_thr and iou>max_iou:
                     iou_found=True
                     max_iou=iou
                     max_iou_at=j
@@ -104,9 +107,9 @@ class Grasp_tracker:
                 # to speed up don't compare with the removed ones
                 if keep_obj[box1] and keep_obj[box2]:
                     # if boxes overlap iou>0.5
-                    if overlap(o_boxes[box1], o_boxes[box2]) > 0:
+                    if overlap(o_boxes[box1], o_boxes[box2]) > self.iou_obj_thr:
                         # chose the one with minimum iou_diff and not very lower ins score tho
-                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(o_boxes[box1])*2>box_size(o_boxes[box2]):
+                        if iou_opt_list[box1] > iou_opt_list[box2] and o_scores[box1] < o_scores[box2] * 5 and box_size(o_boxes[box1])*1.5>box_size(o_boxes[box2]):
                             keep_obj[box1] = False
                         else:
                             keep_obj[box2] = False
