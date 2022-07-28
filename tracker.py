@@ -17,7 +17,7 @@ class Grasp_tracker:
     def __init__(self):
         self.record=[]
         self.last_seen_thr=4
-        self.iou_obj_thr=0.1
+        self.iou_obj_thr=0.5
         self.ho_iou_thr=0.01
         self.h_iou_over_frames=0.1
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
