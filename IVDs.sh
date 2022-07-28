@@ -66,6 +66,7 @@ python3 inference_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1
 
 
 
+scp -r guillermo@45.158.142.229:/media/workspace/hand_object_datasets/lazyCopy /mnt/c/Users/mom44/Documents/clearimageai
 
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy /mnt/c/Users/mom44/Documents/clearimageai
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy/base_4c.mp4 base_4c.mp4

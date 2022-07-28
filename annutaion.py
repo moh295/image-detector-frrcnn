@@ -330,12 +330,9 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
 
     else:
         o_kept = my_nms(o_boxes, o_scores)
-
-
-   #boxes after filtring
-
-    o_boxes = o_boxes[o_kept]
-    o_scores = o_scores[o_kept]
+       #boxes after filtring
+        o_boxes = o_boxes[o_kept]
+        o_scores = o_scores[o_kept]
     # p_boxes = p_boxes[p_kept]
     # p_scores = p_scores[p_kept]
 
