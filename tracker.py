@@ -17,7 +17,7 @@ class Grasp_tracker:
         self.iou_obj_thr=0.1 #overlp objects in the same frame
         self.ho_iou_thr=0.01 #hand to object minmum ovelap
         self.h_iou_over_frames=0.1 #hands overlap between frames
-        self.min_iou_diff=0.2 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
+        self.min_iou_diff=0.4 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
         self.box_change_thr =0.2 # 0.0 - 1.0 where 0.0 no change
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
@@ -200,7 +200,6 @@ class Grasp_tracker:
                             # if there is no big change in the size
                             if boxes_change_ratio(o_boxes[j],self.record[idx].obj_bbx) <self.box_change_thr:
                                 self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
-
                             else:tracked_hand_idx[i] =-1
 
             # hand-obj detected for the first time add them to the list
