@@ -10,7 +10,6 @@ local ip
 ssh guillermo@192.168.188.124
 Mb6TNx0hR8
 
-
 #id ZzTe4LcpaA1657108798
 puplic ip
 ssh guillermo@45.158.142.230

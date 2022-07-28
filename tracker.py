@@ -46,28 +46,27 @@ class Grasp_tracker:
         self.record = temp.copy()
 
     def hand_track(self,h_bbox):
+        '''
+        it compare the h_bbox with tracked hands on the record
+        it create a list with same length as h_bbox , it contained the indexes for the bbx in the recored
+        which has the max iou with corresponding h_bbox
+        it also save the iou values in tracked_iou which will be used later in find_iou_diff
+
+        :param h_bbox:
+        :return: tracked_hand_idx, tracked_iou
+        '''
 
         # not tracked hand has value of -1 the others will have the index of the corresponding hand in the record
         tracked_hand_idx=[-1]*len(h_bbox)
-
         #iou list between each hand to the ones in previous frame
         tracked_iou=[0]*len(h_bbox)
 
         for i in range(len(h_bbox)):
-            max_iou = 0
-            max_iou_at = 0
-            iou_found = False
-
             for j in range(len(self.record)):
                 iou=overlap(h_bbox[i],self.record[j].hand_bbx)
-                if iou >self.h_iou_over_frames and iou>max_iou :
-                    iou_found=True
-                    max_iou=iou
-                    max_iou_at=j
-            if iou_found:
-                tracked_hand_idx[i]=max_iou_at
-                tracked_iou[i]=max_iou
-
+                if iou >self.h_iou_over_frames:
+                    tracked_hand_idx[i]=j
+                    tracked_iou[i]=iou
         return  tracked_hand_idx, tracked_iou
 
 
