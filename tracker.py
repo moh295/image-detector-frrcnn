@@ -7,10 +7,7 @@ class Grasp:
         self.last_seen=0
         self.hand_score=hand_score
         self.obj_score=obj_score
-        x=int((hand_bbx[2] - hand_bbx[0])/2)
-        y=int((hand_bbx[3] - hand_bbx[1])/2)
-        self.picked_point=[x,y]
-        self.picked_hand_size=box_size(hand_bbx)
+        self.obj_birth=obj_bbx
         self.nb_trk_frame = 0
 
 class Grasp_tracker:
@@ -20,7 +17,7 @@ class Grasp_tracker:
         self.iou_obj_thr=0.1 #overlp objects in the same frame
         self.ho_iou_thr=0.01 #hand to object minmum ovelap
         self.h_iou_over_frames=0.1 #hands overlap between frames
-        self.min_iou_diff=0.4 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
+        self.min_iou_diff=0.1 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
