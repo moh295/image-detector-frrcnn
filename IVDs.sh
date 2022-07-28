@@ -62,7 +62,7 @@ python3 inference_mp4_video.py --video data/ho3.3.mp4 --checkpoint data/torch_tr
 python3 inference_video.py --output data/lazyCopy/base_4c.mp4;
 python3 inference_video.py --video data//ho3.mp4 --input_scale 1.2 --output_scale 2.5 --output data/lazyCopy/ho3_4c_120-250.mp4 ;
 python3 inference_video.py --video data/ho2.mp4 --output data/lazyCopy/ho2_4c_600-200.mp4;
-python3 inference_video.py --video data/ho3.3.mp4 --output_scale 1 --output data/lazyCopy/ho3.3_4c.mp4;
+python3 inference_video.py --video data/ho3.3.mp4 --output_scale 1 --skip 2 --output data/lazyCopy/ho3.3_4c.mp4;
 python3 inference_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1 --output data/lazyCopy/ho4_1x1_4c.mp4
 
 
@@ -70,5 +70,6 @@ python3 inference_video.py --video data/ho4.mp4 --output_scale 1 --input_scale 1
 
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy /mnt/c/Users/mom44/Documents/clearimageai
 scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy/base_4c.mp4 base_4c.mp4
+scp -r guillermo@45.158.142.230:/media/workspace/hand_object_datasets/lazyCopy/ho3_4c_120-250.mp4 ho3_4c_120-250.mp4
 #train from last checkopint
 python3 base_train.py --checkpoint data/retrain_fasterrcnn_80k_4c.pth

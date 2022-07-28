@@ -360,14 +360,26 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             bbox = np.array(track.hand_bbx) * output_scale
             bbox = bbox.astype(int)
             color_intensity = int(200 - 200 * track.hand_score)
-            color=(color_intensity, 255, color_intensity) if track.nb_trk_frame>2 and track.last_seen <2 else (255, 255, 255)
+            if track.nb_trk_frame > 2:
+                if track.last_seen <2:
+                    color = (color_intensity, 255, color_intensity)
+                else:
+                    color=(0,0,0)
+            else:color=(255, 255, 255)
+
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
             # cv2.putText(numpy_image, f' {track.hand_score:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
             #tracked obj
             color_intensity = int(200 - 200 * track.obj_score)
-            color=(color_intensity, color_intensity, 255) if track.nb_trk_frame>2 and track.last_seen <2 else (255, 255, 255)
+            if track.nb_trk_frame > 2:
+                if track.last_seen < 2:
+                    color = (color_intensity, color_intensity, 255)
+                else:
+                    color = (0, 0, 0)
+            else:
+                color = (255, 255, 255)
             bbox = np.array(track.obj_bbx) * output_scale
             bbox = bbox.astype(int)
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)

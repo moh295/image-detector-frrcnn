@@ -5,7 +5,6 @@ from utils import image_resize
 import json
 from frRCNN import FrRCNN
 from tracker import Grasp_tracker
-
 if __name__ == '__main__':
     file = 'config.json'
     with open(file) as json_data_file:
@@ -34,14 +33,10 @@ if __name__ == '__main__':
     tensor_list=[]
     image_batch=[]
     grasp_tracker=Grasp_tracker()
-
     count=1
     while True:
-
         # Capture frame-by-frame
-
         ret, frame = cap.read()
-
         # # Display the resulting frame
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -56,7 +51,6 @@ if __name__ == '__main__':
             count+=args.batch
             tensor_list = []
             image_batch=[]
-
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()

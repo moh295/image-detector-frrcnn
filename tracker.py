@@ -105,14 +105,10 @@ class Grasp_tracker:
                             iou_opt_list[i] = iou_diff
                             opt_iou=iou_diff
                             opt_iou_at = j
-
-
             if opt_iou_found:
                 hand_on_obj_idx[i] = opt_iou_at
             elif iou_found:
                 hand_on_obj_idx[i] = max_iou_at
-
-
         return iou_opt_list,hand_on_obj_idx
 
     def remvoe_overlap_with_iou_opt(self,o_boxes,hand_on_obj_idx,iou_opt_list,o_scores):
@@ -178,7 +174,6 @@ class Grasp_tracker:
                 if tracked_hand_idx[i] == -1:
                     for j in range(len(o_boxes)):
                         if hand_on_obj_idx[j]== i:
-
                             self.add(h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
 
                 #if hand is empty clean its tracked_hand_idx
@@ -189,8 +184,6 @@ class Grasp_tracker:
                             has_and_obj = True
                     if not has_and_obj:
                         tracked_hand_idx[i]=-1
-
                     #remove h-o which lost track for more than "last_seen_thr" frames
         self.clean(tracked_hand_idx)
-
         return keep_obj
