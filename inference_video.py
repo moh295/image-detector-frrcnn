@@ -37,7 +37,7 @@ if __name__ == '__main__':
     a.add_argument("--input_scale",type=float, help="input image scale", default=0.6)
     a.add_argument("--output_scale", type=float, help="input image scale", default=1.0)
     a.add_argument("--output", help="path to output folder", default=root+'output.mp4')
-    a.add_argument("--batch",type=int, help="batch size", default=1)
+    a.add_argument("--batch",type=int, help="batch size", default=30)
     a.add_argument("--skip", type=int, help="skip each number of frames (default 1 for not skipping)", default=1)
     a.add_argument("--fps", type=int, help="output video frame rate /s", default=30)
     a.add_argument("--checkpoint", type=str, help="train model weight", default=checkpoint)
@@ -77,12 +77,12 @@ if __name__ == '__main__':
                 model.create_video(width, height, fps, args.output)
 
             if len(tensor_list)==args.batch:
-                frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,show_vid=True,images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
+                frame=model.predict(args.output, tensors=tensor_list,save_vid=True,count=count,images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
                 count+=args.batch
                 tensor_list = []
                 image_batch=[]
     #check if there is still images in the list in case the previous loop break befor len(tensor_list)==args.batch
     if len(tensor_list):
-        model.predict(args.output, tensors=tensor_list, save_vid=True,show_vid=True, count=count, images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
+        model.predict(args.output, tensors=tensor_list, save_vid=True, count=count, images=image_batch,output_scale=args.output_scale,tracker=grasp_tracker)
 
     model.realse_vid()
