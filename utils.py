@@ -108,7 +108,7 @@ def box_size(box):
 def chang_ratio(val1,val2):
     big = max(val1, val2)
     small = min(val1, val2)
-    return small / big
+    return 1- (small / big)
 
 def boxes_change_ratio(box1,box2):
     size1=box_size(box1)
