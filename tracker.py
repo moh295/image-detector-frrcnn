@@ -17,7 +17,7 @@ class Grasp_tracker:
         self.iou_obj_thr=0.1 #overlp objects in the same frame
         self.ho_iou_thr=0.01 #hand to object minmum ovelap
         self.h_iou_over_frames=0.1 #hands overlap between frames
-        self.min_iou_diff=0.1 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
+        self.min_iou_diff=0.2 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
@@ -95,8 +95,11 @@ class Grasp_tracker:
                     if tracked_hand_idx[j] != -1:
                         #find iou between obj in frame 1 and obj  in frame 2
                         obj1_obj2_iou = overlap(o_boxes[i], self.record[tracked_hand_idx[j]].obj_bbx)
+                        # change_ratio=boxes_change_ratio(self.record[tracked_hand_idx[j]].obj_bbx,o_boxes[i])
                         # the diffrence of iou between hands and objects will indicate if they move togather if iou_opt close to zero
-                        iou_diff=abs(h1_h2_iou[j] - obj1_obj2_iou)
+                        # also if there is no big change in the size
+                        change_ratio=chang_ratio(h1_h2_iou[j],obj1_obj2_iou)
+                        iou_diff=1-change_ratio
                         if iou_diff<self.min_iou_diff and iou_diff<opt_iou:
                             opt_iou_found=True
                             iou_opt_list[i] = iou_diff

@@ -101,8 +101,16 @@ def my_nms(boxes,scores):
 
 
 def box_size(box):
-
-
     width = box[2] - box[0]
     hight = box[3] - box[1]
     return width * hight
+
+def chang_ratio(val1,val2):
+    big = max(val1, val2)
+    small = min(val1, val2)
+    return small / big
+
+def boxes_change_ratio(box1,box2):
+    size1=box_size(box1)
+    size2=box_size(box2)
+    return chang_ratio(size1,size2)
