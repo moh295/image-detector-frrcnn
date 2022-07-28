@@ -17,9 +17,10 @@ class Grasp_tracker:
     def __init__(self):
         self.record=[]
         self.last_seen_thr=4
-        self.iou_obj_thr=0.5
-        self.ho_iou_thr=0.01
-        self.h_iou_over_frames=0.1
+        self.iou_obj_thr=0.1 #overlp objects in the same frame
+        self.ho_iou_thr=0.01 #hand to object minmum ovelap
+        self.h_iou_over_frames=0.1 #hands overlap between frames
+        self.min_iou_diff=0.4 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
@@ -78,23 +79,37 @@ class Grasp_tracker:
         for i in range(len(o_boxes)):
             max_iou=0
             max_iou_at=0
+            opt_iou=1
+            opt_iou_at=0
+            opt_iou_found=False
             iou_found=False
             for j in range(len(h_boxes)):
                 # check if obj overlap with hand
                 iou = overlap(h_boxes[j], o_boxes[i])
-                if iou > self.ho_iou_thr and iou>max_iou:
-                    iou_found=True
-                    max_iou=iou
-                    max_iou_at=j
+                if iou > self.ho_iou_thr:
+                    #select the maximum overlap hand in case optim wasn't found yet
+                    if iou > max_iou and not opt_iou_found:
+                        max_iou=iou
+                        max_iou_at = j
+                        iou_found = True
+
                     # if this object overlap with tracked hand (hand detected in frame 1 and 2)
+                    #find the optimal iou diff
                     if tracked_hand_idx[j] != -1:
                         #find iou between obj in frame 1 and obj  in frame 2
                         obj1_obj2_iou = overlap(o_boxes[i], self.record[tracked_hand_idx[j]].obj_bbx)
                         # the diffrence of iou between hands and objects will indicate if they move togather if iou_opt close to zero
-                        iou_opt_list[i] = abs(h1_h2_iou[j] - obj1_obj2_iou)
+                        iou_diff=abs(h1_h2_iou[j] - obj1_obj2_iou)
+                        if iou_diff<self.min_iou_diff and iou_diff<opt_iou:
+                            opt_iou_found=True
+                            iou_opt_list[i] = iou_diff
+                            opt_iou=iou_diff
+                            opt_iou_at = j
 
 
-            if iou_found:
+            if opt_iou_found:
+                hand_on_obj_idx[i] = opt_iou_at
+            elif iou_found:
                 hand_on_obj_idx[i] = max_iou_at
 
 

@@ -297,7 +297,7 @@ def annutaion_13_classes(numpy_image,boxes,classes,scores,output_scale):
 
 def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_tracker=False):
 
-    labels_dict = {'Hand_free': 1, 'Hand_cont': 2, 'object': 3,'person':4}
+    labels_dict = {'H_free': 1, 'H_cont': 2, 'object': 3,'person':4}
     peson_prob_thresh=0.3
     obj_prob_thresh = 0.1
     hand_prob_thresh = 0.51
@@ -348,25 +348,8 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
         color = (225, color_intensity, color_intensity)
         if  prob > hand_prob_thresh:
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
+            cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] +[0,20], font, 1, color, 2, cv2.LINE_AA)
 
-    #drow all object
-
-    # for bbox, prob in zip(o_boxes, o_scores):
-    #     category = 'object'
-    #     bbox = np.array(bbox) * output_scale
-    #     bbox = bbox.astype(int)
-    #
-    #     if max_hand_box:
-    #         acceptable_size = box_size(bbox) < max_hand_box * max_size_ratio
-    #     else:
-    #         acceptable_size = True
-    #
-    #     color_intensity = int(200 - 200 * prob)
-    #     color = (255, 255, color_intensity)
-    #     if prob > obj_prob_thresh:
-    #         cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
-    #         cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
 
     #draw tracked hand-obj
@@ -380,6 +363,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             color=(color_intensity, 255, color_intensity) if track.nb_trk_frame>2 and track.last_seen <2 else (255, 255, 255)
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
+            # cv2.putText(numpy_image, f' {track.hand_score:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
             #tracked obj
             color_intensity = int(200 - 200 * track.obj_score)
@@ -388,7 +372,26 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             bbox = bbox.astype(int)
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
+            cv2.putText(numpy_image, f' {track.obj_score:.3f}', bbox[:2] +[-10,30], font, 1, color, 2, cv2.LINE_AA)
+    else:
 
+        # drow all object
+
+        for bbox, prob in zip(o_boxes, o_scores):
+            category = 'object'
+            bbox = np.array(bbox) * output_scale
+            bbox = bbox.astype(int)
+
+            if max_hand_box:
+                acceptable_size = box_size(bbox) < max_hand_box * max_size_ratio
+            else:
+                acceptable_size = True
+
+            color_intensity = int(200 - 200 * prob)
+            color = (255, 255, color_intensity)
+            if prob > obj_prob_thresh:
+                cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
+                cv2.putText(numpy_image, f'{category:s} {prob:.3f}', bbox[:2] +[0,20] , font, 1, color, 2, cv2.LINE_AA)
 
     # for bbox , prob in zip(p_boxes,p_scores):
     #     category = 'person'
