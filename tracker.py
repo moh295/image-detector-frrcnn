@@ -14,7 +14,7 @@ class Grasp_tracker:
     def __init__(self):
         self.record=[]
         self.last_seen_thr=4
-        self.iou_obj_thr=0.1 #overlp objects in the same frame
+        self.iou_obj_thr=0.0 #overlp objects in the same frame
         self.ho_iou_thr=0.01 #hand to object minmum ovelap
         self.h_iou_over_frames=0.1 #hands overlap between frames
         self.min_iou_diff=0.5 # iou(h_F1 ,h_F2) -iou(obj_F1,obj_F2) ideal =0
