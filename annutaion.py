@@ -370,7 +370,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
             y=int((bbox[3]-bbox[1])/2)+bbox[1]
-            cv2.putText(numpy_image, f'stl: {100*track.stillness:.2f} ', (bbox[0], y), font, 1, color, 2, cv2.LINE_AA)
+            cv2.putText(numpy_image, f'stl: {track.avg_stillness:.2f} ', (bbox[0], y), font, 1, color, 2, cv2.LINE_AA)
             # cv2.putText(numpy_image, f' {track.hand_score:.3f}', bbox[:2] + 20, font, 1, color, 2, cv2.LINE_AA)
 
             #tracked obj
@@ -386,7 +386,7 @@ def annutaion_4_classes(numpy_image,boxes,classes,scores,output_scale,grasp_trac
             bbox = bbox.astype(int)
             cv2.rectangle(numpy_image, bbox[:2], bbox[2:4], color, 2)
             cv2.putText(numpy_image, f'{category:s} ', (bbox[0],bbox[3] - 20), font, 1, color, 2, cv2.LINE_AA)
-            cv2.putText(numpy_image, f' {track.obj_score:.3f}-n:{100*track.noise:.2f}', bbox[:2] +[-10,30], font, 1, color, 2, cv2.LINE_AA)
+            cv2.putText(numpy_image, f' {track.obj_score:.3f}-n:{track.avg_noise:.2f}', bbox[:2] +[-10,30], font, 1, color, 2, cv2.LINE_AA)
     else:
 
         # drow all object

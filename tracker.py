@@ -11,6 +11,8 @@ class Grasp:
         self.nb_trk_frame = 0
         self.noise=0 #concisntcy in iou diff between hand iou and obj iou
         self.stillness=0 # when hand not moving stillness =iou hands average betewen frames =1
+        self.avg_stillness=0
+        self.avg_noise=0
 
 class Grasp_tracker:
     def __init__(self):
@@ -31,11 +33,11 @@ class Grasp_tracker:
         self.record[idx].obj_score=obj_score
         self.record[idx].nb_trk_frame+=1
         self.record[idx].last_seen=0
-        accumulated_noise=self.record[idx].noise+noise
+        self.record[idx].noise+=noise
         #averageing the noise
-        self.record[idx].noise=accumulated_noise/self.record[idx].nb_trk_frame
-        accumulated_stillness=self.record[idx].stillness + stillness
-        self.record[idx].stillness=accumulated_stillness /self.record[idx].nb_trk_frame
+        self.record[idx].avg_noise= self.record[idx].noise/self.record[idx].nb_trk_frame
+        self.record[idx].stillness += stillness
+        self.record[idx].avg_stillness= self.record[idx].stillness /self.record[idx].nb_trk_frame
 
 
     # remove h-o which lost track for more than "last_seen_thr" frames
