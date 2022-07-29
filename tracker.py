@@ -9,6 +9,8 @@ class Grasp:
         self.obj_score=obj_score
         self.obj_birth=obj_bbx
         self.nb_trk_frame = 0
+        self.noise=0 #concisntcy in iou diff between hand iou and obj iou
+        self.stillness=0 # when hand not moving stillness =iou hands average betewen frames =1
 
 class Grasp_tracker:
     def __init__(self):
@@ -22,13 +24,19 @@ class Grasp_tracker:
     def add(self,hand_bbx,hand_score,obj_bbx,obj_score):
         obj=Grasp(hand_bbx,hand_score,obj_bbx,obj_score)
         self.record.append(obj)
-    def update(self,idx,hand_bbx,hand_score,obj_bbx,obj_score):
+    def update(self,idx,hand_bbx,hand_score,obj_bbx,obj_score,noise,stillness):
         self.record[idx].hand_bbx=hand_bbx
         self.record[idx].obj_bbx=obj_bbx
         self.record[idx].hand_score=hand_score
         self.record[idx].obj_score=obj_score
         self.record[idx].nb_trk_frame+=1
         self.record[idx].last_seen=0
+        accumulated_noise=self.record[idx].noise+noise
+        #averageing the noise
+        self.record[idx].noise=accumulated_noise/self.record[idx].nb_trk_frame
+        accumulated_stillness=self.record[idx].stillness + stillness
+        self.record[idx].stillness=accumulated_stillness /self.record[idx].nb_trk_frame
+
 
     # remove h-o which lost track for more than "last_seen_thr" frames
     def clean(self,tracked_hand_idx):
@@ -191,6 +199,7 @@ class Grasp_tracker:
             o_boxes=o_boxes[keep_obj]
             o_scores=o_scores[keep_obj]
             hand_on_obj_idx=np.array(hand_on_obj_idx)[keep_obj]
+            iou_opt_list=np.array(iou_opt_list)[keep_obj]
 
             for i in range(len(tracked_hand_idx)):
                 #if hand-obj was tracked update the record
@@ -201,7 +210,7 @@ class Grasp_tracker:
                             # if there is no big change in the size
 
                             if boxes_change_ratio(o_boxes[j],self.record[idx].obj_bbx) <self.box_change_thr:
-                                self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j])
+                                self.update(tracked_hand_idx[i],h_boxes[i],h_scores[i],o_boxes[j],o_scores[j],iou_opt_list[j],h1_h2_iou[i])
                             else:tracked_hand_idx[i] =-1
 
             # hand-obj detected for the first time add them to the list
